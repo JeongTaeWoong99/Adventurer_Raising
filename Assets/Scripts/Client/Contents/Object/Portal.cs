@@ -17,6 +17,9 @@ public class Portal : MonoBehaviour
 				// 클라이언트 클리어
 				ClientManager.Clear();
 				
+				// manageUI 로딩 켜기
+				ClientManager.UI.manageUI.LoadingPanelObject.SetActive(true);
+				
 				// 포탈의 개인 MmNumber 넣어주기
 				ClientManager.Scene.SceneChangeMmNumber = portalSceneChangeMmNumber;
 				ClientManager.Scene.PortalMoveSceneName = PortalMoveSceneName;

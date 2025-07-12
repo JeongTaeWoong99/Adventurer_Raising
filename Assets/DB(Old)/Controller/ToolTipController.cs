@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Playables;
 
 public class ToolTipController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -11,7 +10,7 @@ public class ToolTipController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerEnter(PointerEventData eventData)
     {
         ToolTipManager.instance.SetupToolTip(iconName);                                // 툴팁 텍스트 설정 
-        ToolTipManager.instance.tooltipObject.transform.position = transform.position; // 툴티 위치 변경
+        // ToolTipManager.instance.tooltipObject.transform.position = transform.position; // 툴티 위치 변경
         ToolTipManager.instance.tooltipObject.SetActive(true);                         // 켜기
     }
 
