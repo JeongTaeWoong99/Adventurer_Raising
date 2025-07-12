@@ -14,7 +14,7 @@ public class AuthManager
 		if (string.IsNullOrEmpty(UI_LoginScene.MakeEmailPlaceholder.text) || string.IsNullOrEmpty(UI_LoginScene.MakePasswordPlaceholder.text) ||
 			string.IsNullOrEmpty(UI_LoginScene.MakeNickNamePlaceholder.text))
 		{
-		    Debug.Log("이메일 또는 비밀번호 또는 닉네임이 비어있습니다.");
+		    UI_LoginScene.AccountResultText.text = "이메일 또는 비밀번호 또는 닉네임이 비어있습니다.";
 		    return;
 		}
 		ClientManager.UI.manageUI.LoadingPanelObject.SetActive(true); // manageUI 로딩 켜기

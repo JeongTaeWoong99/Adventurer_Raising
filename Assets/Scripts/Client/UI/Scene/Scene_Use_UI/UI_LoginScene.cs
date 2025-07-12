@@ -11,6 +11,7 @@ public class UI_LoginScene : UI_Scene
 	[Header("GameObject")]
 	public GameObject LoginPanelObject   => GetObject((int)GameObjects.LoginPanel);
 	public GameObject AccountPanelObject => GetObject((int)GameObjects.AccountPanel);
+	public GameObject StartPanel         => GetObject((int)GameObjects.StartPanel);
 	
 	[Header("TextMeshProUGUI")]
 	public TMP_InputField EmailPlaceholderText    => GetTMP_Text((int)TMP_Texts.EmailPlaceholderText);
@@ -20,16 +21,17 @@ public class UI_LoginScene : UI_Scene
 	public TMP_InputField MakeNickNamePlaceholder => GetTMP_Text((int)TMP_Texts.MakeNickNamePlaceholder);
 	
 	[Header("TMP_InputField")]
-	public TextMeshProUGUI ResultText => GetText((int)Texts.ResultText);
+	public TextMeshProUGUI LoginResultText   => GetText((int)Texts.LoginResultText);
+	public TextMeshProUGUI AccountResultText => GetText((int)Texts.AccountResultText);
 	
 	enum Buttons
 	{
-		StartButton, AccountPanelOpenButton, AccountCreateButton, CloseButton, LoginButton
+		StartButton, AccountPanelOpenButton, AccountCreateButton, CloseButton, LoginButton, ExitButton
 	}
 	
 	enum GameObjects
 	{
-		LoginPanel, AccountPanel
+		LoginPanel, AccountPanel, StartPanel
 	}
 	
 	enum TMP_Texts
@@ -39,7 +41,8 @@ public class UI_LoginScene : UI_Scene
 
 	enum Texts
 	{
-		ResultText
+		//ResultText
+		LoginResultText, AccountResultText
 	}
 
 	public override void Init()
@@ -48,24 +51,27 @@ public class UI_LoginScene : UI_Scene
 
 		// 버튼 바인드
 		Bind<Button>(typeof(Buttons));
-		  
-		GetButton((int)Buttons.StartButton).gameObject.SetActive(false);				// 스타트 버튼 끄기
+		
 		GetButton((int)Buttons.StartButton).gameObject.BindEvent(OnStartButtonClicked);	// 스타트 버튼 이벤트 등록
 		
 		GetButton((int)Buttons.AccountPanelOpenButton).gameObject.BindEvent(OnAccountPanelOpenButtonClicked); // 계정 생성 버튼 이벤트 등록
 																				
-		GetButton((int)Buttons.CloseButton).gameObject.BindEvent(OnCloseButtonClicked);	// 계정생성 창 닫기 이벤트 등록
+		GetButton((int)Buttons.CloseButton).gameObject.BindEvent(OnCloseButtonClicked);					      // 계정생성 창 닫기 이벤트 등록
 		
-		GetButton((int)Buttons.AccountCreateButton).gameObject.BindEvent(DBManager.Auth.OnRequestMakeId); // 계정 생성 요청  이벤트 등록
+		GetButton((int)Buttons.AccountCreateButton).gameObject.BindEvent(DBManager.Auth.OnRequestMakeId);     // 계정 생성 요청  이벤트 등록
 		
-		GetButton((int)Buttons.LoginButton).gameObject.BindEvent(DBManager.Auth.OnRequestLogin);	 // 로그인 요청 이벤트 등록
+		GetButton((int)Buttons.LoginButton).gameObject.BindEvent(DBManager.Auth.OnRequestLogin);	          // 로그인 요청 이벤트 등록
+		
+		GetButton((int)Buttons.ExitButton).gameObject.BindEvent(OnExitGame);								  // 게임 종료 버튼
 		
 		// 게임오브젝트 바인드
 		Bind<GameObject>(typeof(GameObjects));
 		
-		GetObject((int)GameObjects.LoginPanel).gameObject.SetActive(false);	// 로그인 패널 끄기
+		GetObject((int)GameObjects.LoginPanel).gameObject.SetActive(false);	  // 로그인 패널 끄기
 
-		GetObject((int)GameObjects.AccountPanel).gameObject.SetActive(false);// 계정생성 패널 끄기		
+		GetObject((int)GameObjects.AccountPanel).gameObject.SetActive(false); // 계정생성 패널 끄기
+		
+		GetObject((int)GameObjects.StartPanel).gameObject.SetActive(false);   // 시작 패널 끄기		
 		
 		// TMP_텍스트 바인딩
 		Bind<TMP_InputField>(typeof(TMP_Texts));
@@ -73,13 +79,16 @@ public class UI_LoginScene : UI_Scene
 		// 일반 텍스트
 		Bind<TextMeshProUGUI>(typeof(Texts));
 		
-		GetText((int)Texts.ResultText).gameObject.SetActive(false); // 결과 텍스트 끄기
+		GetText((int)Texts.LoginResultText).gameObject.SetActive(true);   // 텍스트 끄기
+		GetText((int)Texts.AccountResultText).gameObject.SetActive(true); // 텍스트 끄기
 	}
 	
 	// Managers를 통해, 게임씬 호출
 	// 나중에는 DB에서 참고해서, 저장된 위치로 씬 불러오기
 	private void OnStartButtonClicked(PointerEventData data)
 	{
+		StartPanel.SetActive(false);
+	
 		// 클라이언트 클리어
 		ClientManager.Clear();
 		
@@ -104,19 +113,25 @@ public class UI_LoginScene : UI_Scene
 		ClientManager.UI.manageUI.LoadingPanelObject.SetActive(false); // manageUI 로딩 끄기
 		
 		GetObject((int)GameObjects.LoginPanel).gameObject.SetActive(true);
-		GetText((int)Texts.ResultText).gameObject.SetActive(true);
-		GetText((int)Texts.ResultText).text = "로그인 정보를 입력하세요.";
+		GetText((int)Texts.LoginResultText).gameObject.SetActive(true);
+		GetText((int)Texts.LoginResultText).text = "로그인 정보를 입력하세요.";
 	}
 
 	private void OnAccountPanelOpenButtonClicked(PointerEventData data)
 	{
 		GetObject((int)GameObjects.AccountPanel).gameObject.SetActive(true); 
-		GetText((int)Texts.ResultText).text = "가입 정보를 입력하세요.";	
+		GetText((int)Texts.AccountResultText).text = "가입 정보를 입력하세요.";	
 	}
 
 	private void OnCloseButtonClicked(PointerEventData data)
 	{
 		GetObject((int)GameObjects.AccountPanel).gameObject.SetActive(false);
-		GetText((int)Texts.ResultText).text = "로그인 정보를 입력하세요.";
+		GetText((int)Texts.LoginResultText).text = "로그인 정보를 입력하세요.";
+	}
+
+	private void OnExitGame(PointerEventData data)
+	{
+		Debug.Log("게임 종료 버튼 클릭");
+		Application.Quit();
 	}
 }

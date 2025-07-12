@@ -19,7 +19,7 @@ public class UI_GameScene : UI_Scene
     
     enum Buttons
     {
-        GoToLoginButton, GoToVillageButton, GoToVillageDeathButton
+        GoToLoginButton, GoToVillageButton, GoToVillageDeathButton, ExitLButton
     }
     
     enum GameObjects
@@ -40,8 +40,12 @@ public class UI_GameScene : UI_Scene
         // 버튼 바인드
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.GoToLoginButton).gameObject.BindEvent(GoToLoginButtonClicked);          // 로그아웃 및 로그인화면으로 돌아가기
+        
         GetButton((int)Buttons.GoToVillageButton).gameObject.BindEvent(GoToVillageButtonClicked);      // 마을로 워프
+
         GetButton((int)Buttons.GoToVillageDeathButton).gameObject.BindEvent(GoToVillageButtonClicked); // 마을로 돌아가기
+        
+        GetButton((int)Buttons.ExitLButton).gameObject.BindEvent(OnExitGame);                          // 게임 종료
         
         // 게임오브젝트 바인드
         Bind<GameObject>(typeof(GameObjects));
@@ -82,6 +86,9 @@ public class UI_GameScene : UI_Scene
     {
         // 클라이언트 클리어
         ClientManager.Clear();
+        
+        // manageUI 로딩 켜기
+        ClientManager.UI.manageUI.LoadingPanelObject.SetActive(true);
 				
         // 포탈의 개인 MmNumber 넣어주기
         ClientManager.Scene.SceneChangeMmNumber = "N01";                    // 마을 버튼 이동 mmNumber
@@ -97,5 +104,11 @@ public class UI_GameScene : UI_Scene
     {
         GetObject((int)GameObjects.GoToVillageDeathPanel).gameObject.SetActive(isActive);	// 마을로돌아아기 패널 켜기
         GetButton((int)Buttons.GoToVillageDeathButton).gameObject.SetActive(isActive);      // 마을로돌아가기 버튼 켜기
+    }
+    
+    private void OnExitGame(PointerEventData data)
+    {
+        Debug.Log("게임 종료 버튼 클릭");
+        Application.Quit();
     }
 }

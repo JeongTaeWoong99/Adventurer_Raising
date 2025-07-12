@@ -17,5 +17,4 @@ public class UI_Manage : UI_Scene
 		
 		GetObject((int)GameObjects.LoadingPanel).gameObject.SetActive(true); // 로딩 패널 켜기		
 	}
-
 }
