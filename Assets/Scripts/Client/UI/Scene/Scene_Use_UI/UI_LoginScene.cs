@@ -23,6 +23,12 @@ public class UI_LoginScene : UI_Scene
 	[Header("TextMeshProUGUI")]
 	public TextMeshProUGUI LoginResultText   => GetText((int)Texts.LoginResultText);
 	public TextMeshProUGUI AccountResultText => GetText((int)Texts.AccountResultText);
+	public TextMeshProUGUI NickNameText                  => GetText((int)Texts.NickNameText);
+	public TextMeshProUGUI SerialNumberNameText          => GetText((int)Texts.SerialNumberNameText);
+	public TextMeshProUGUI CurrentLevelText				 => GetText((int)Texts.CurrentLevelText);
+	public TextMeshProUGUI CurrentExpText                => GetText((int)Texts.CurrentExpText);
+	public TextMeshProUGUI CurrentGoldText               => GetText((int)Texts.CurrentGoldText);
+	public TextMeshProUGUI SavedSceneText                => GetText((int)Texts.SavedSceneText);
 	
 	enum Buttons
 	{
@@ -41,7 +47,8 @@ public class UI_LoginScene : UI_Scene
 
 	enum Texts
 	{
-		LoginResultText, AccountResultText
+		LoginResultText, AccountResultText,
+		NickNameText, SerialNumberNameText, CurrentLevelText, CurrentExpText, CurrentGoldText, SavedSceneText
 	}
 
 	public override void Init()

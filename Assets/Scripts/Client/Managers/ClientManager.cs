@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Client.Managers.Contents;
 using UnityEngine;
 
 // 모든 매니저 스크립트들을 만들어, 사용하는 총 관리자
@@ -15,9 +16,13 @@ public class ClientManager : MonoBehaviour
 	[Header("Contents 매니저")]
 	GameManagerEx       _game       = new GameManagerEx();
     DispatcherManagerEx _dispatcher = new DispatcherManagerEx();
+    ToolTipManager      _toolTip    = new ToolTipManager();
+    FPSManager          _fps        = new FPSManager();
     public static GameManagerEx       Game       { get { return Instance._game; } }
     public static DispatcherManagerEx Dispatcher { get { return Instance._dispatcher; } }
-
+    public static ToolTipManager      ToolTip    { get { return Instance._toolTip; } }
+    public static FPSManager          FPS        { get { return Instance._fps; } }
+    
     [Header("Core 매니저")]
 	DataManager         _data = new DataManager();
     InputManager       _input = new InputManager();
@@ -55,61 +60,53 @@ public class ClientManager : MonoBehaviour
     {
         Init();
         
-        // 백그라운드 실행 설정 (멀티플레이어 테스트용)
-        Application.runInBackground = true;      // 백그라운드에서도 실행 유지
-        Application.targetFrameRate = 144;       // 목표 프레임률 고정 (포커스 상태)
-        QualitySettings.vSyncCount  = 0;         // V-Sync 비활성화 (프레임률 제한 방지)
-        
+        // 코어
         s_instance._data.Init();
         s_instance._pool.Init();
         s_instance._sound.Init();
         
+        // 컨텐츠
+        s_instance._toolTip.Init();
+        s_instance._fps.Init();
+        
+        // 완료
         isClientInit_Complete = true;
         //Debug.Log("isClientInit_Complete 완료");
     }
     
-    // 포커스 상태에 따른 프레임률 조정
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        // 포커스가 있을 때: 144fps
-        // 포커스가 없을 때: 30fps (멀티플레이어 테스트를 위해 완전히 멈추지 않음)
-        Application.targetFrameRate = hasFocus ? 144 : 60;
-    }
     
-    private float fpsTimer = 0f;
-    
-    // 플레이어의 마우스와 키 입력을 매니저에서 관리.
-    // 인풋 조건을 만족할 때에만, _input.OnUpdate();가 실행된다.
     private void Update()
     {
+        // 코어
         _input.OnUpdate();
         
-        // 모든 대기 중인 작업들을 실행
-        List<Action> actions = Dispatcher.PopAll();
-        foreach (Action action in actions)
-        {
-            action?.Invoke();
-        }
-        
-        // FPS 디버그 (5초마다)
-        fpsTimer += Time.deltaTime;
-        if (fpsTimer >= 5f)
-        {
-            fpsTimer = 0f;
-            float currentFPS = 1.0f / Time.deltaTime;
-            //Debug.Log($"[FPS Debug] 실제 FPS: {currentFPS:F1} | 목표: {Application.targetFrameRate} | V-Sync: {QualitySettings.vSyncCount}");
-        }
+        // 컨텐츠
+        _toolTip.OnUpdate();
+        _fps.OnUpdate();
+        _dispatcher.OnUpdate();
     }
     
     public static void Clear()
     {
+        // 코어
         Input.Clear();
         Sound.Clear();
         Scene.Clear();
         UI.Clear();
         Pool.Clear();
         
+        // 컨텐츠
         Dispatcher.Clear();
         Game.Clear();
+        FPS.Clear();
+    }
+    
+    // 포커스 상태에 따른 프레임률 조정(내장 메서드)
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        // 포커스가 있을 때: 144fps
+        // 포커스가 없을 때: 30fps (멀티플레이어 테스트를 위해 완전히 멈추지 않음)
+        Application.targetFrameRate = hasFocus ? 144 : 60;
+        Debug.Log("OnApplicationFocus => " + Application.targetFrameRate);
     }
 }
