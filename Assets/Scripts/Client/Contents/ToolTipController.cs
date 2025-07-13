@@ -10,7 +10,7 @@ public class ToolTipController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     // 마우스가 ToolTipController가 들어간 UI에 닿으면, 발동
     public void OnPointerEnter(PointerEventData eventData)
     {
-        ToolTipManager.instance.SetupToolTip(iconName);    // 툴팁 텍스트 설정 
+        ClientManager.ToolTip.SetupToolTip(iconName);      // 툴팁 텍스트 설정 
         ClientManager.UI.manageUI.ToolTip.SetActive(true); // 켜기
     }
 

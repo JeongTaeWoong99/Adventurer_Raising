@@ -9,7 +9,17 @@ public class DispatcherManagerEx
 {
 	private object _lock = new object();
 	private Queue<Action> _actionQueue = new Queue<Action>();
-	
+
+	public void OnUpdate()
+	{
+		// 모든 대기 중인 작업들을 실행
+		List<Action> actions = PopAll();
+		foreach (Action action in actions)
+		{
+			action?.Invoke();
+		}
+	}
+
 	// 액션을 큐에 추가 (PacketQueueManager.Push와 유사)
 	public void Push(Action action)
 	{

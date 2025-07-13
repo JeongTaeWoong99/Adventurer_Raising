@@ -39,7 +39,7 @@ public class DataBasePP
 	// 로그인 피드백
 	public void LoginResult(S_LoginResult p)
 	{
-		UI_Manage.LoadingPanelObject.SetActive(false); // 로딩 off
+		UI_Manage.LoadingPanelObject.SetActive(false);		// 로딩 off
 		UI_LoginScene.LoginResultText.text = p.resultText;  // 결과 텍스트 변경
 		
 		// 로그인 성공
@@ -49,7 +49,7 @@ public class DataBasePP
 			UI_LoginScene.LoginPanelObject.SetActive(false);			// 로그인 패널 off
 			UI_LoginScene.StartPanel.gameObject.SetActive(true);		// 시작 패널 on
 			
-			// 참고 정보 세팅
+			// 기본 정보 저장
 			DBManager.RealTime.myDefaultData.email         = p.email;
 			DBManager.RealTime.myDefaultData.creationDate  = p.creationDate;
 			DBManager.RealTime.myDefaultData.nickname      = p.nickname;
@@ -59,6 +59,14 @@ public class DataBasePP
 			DBManager.RealTime.myDefaultData.currentExp    = p.currentExp.ToString();
 			DBManager.RealTime.myDefaultData.currentGold   = p.currentGold.ToString();
 			DBManager.RealTime.myDefaultData.savedScene    = p.savedScene;
+			
+			// 필요 시작 화면 정보 세팅
+			UI_LoginScene.NickNameText.text         = p.nickname;
+			UI_LoginScene.SerialNumberNameText.text = p.serialNumber;
+			UI_LoginScene.CurrentLevelText.text     = p.currentHp.ToString();
+			UI_LoginScene.CurrentExpText.text       = p.currentExp.ToString();
+			UI_LoginScene.CurrentGoldText.text      = p.currentGold.ToString();
+			UI_LoginScene.SavedSceneText.text       = p.savedScene;
 		}
 		// 로그인 실패
 		else
