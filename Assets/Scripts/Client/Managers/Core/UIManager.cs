@@ -158,6 +158,7 @@ public class UIManager
 			gameSceneUI.gameObject.SetActive(false);
 	    if (loginSceneUI != null)
 			loginSceneUI.gameObject.SetActive(false);
-	    // manageUI는 끄지 않는다...
+	    if(manageUI != null) // manageUI는 끄지 않는다... 대신 툴팁은 클리어 될 때, 꺼준다...
+			manageUI.ToolTip.gameObject.SetActive(false);
     }
 }

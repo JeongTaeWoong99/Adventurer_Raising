@@ -13,14 +13,14 @@ public class UI_LoginScene : UI_Scene
 	public GameObject AccountPanelObject => GetObject((int)GameObjects.AccountPanel);
 	public GameObject StartPanel         => GetObject((int)GameObjects.StartPanel);
 	
-	[Header("TextMeshProUGUI")]
+	[Header("TMP_InputField")]
 	public TMP_InputField EmailPlaceholderText    => GetTMP_Text((int)TMP_Texts.EmailPlaceholderText);
 	public TMP_InputField PasswordPlaceholderText => GetTMP_Text((int)TMP_Texts.PasswordPlaceholderText);
 	public TMP_InputField MakeEmailPlaceholder    => GetTMP_Text((int)TMP_Texts.MakeEmailPlaceholder);
 	public TMP_InputField MakePasswordPlaceholder => GetTMP_Text((int)TMP_Texts.MakePasswordPlaceholder);
 	public TMP_InputField MakeNickNamePlaceholder => GetTMP_Text((int)TMP_Texts.MakeNickNamePlaceholder);
-	
-	[Header("TMP_InputField")]
+
+	[Header("TextMeshProUGUI")]
 	public TextMeshProUGUI LoginResultText   => GetText((int)Texts.LoginResultText);
 	public TextMeshProUGUI AccountResultText => GetText((int)Texts.AccountResultText);
 	
@@ -41,7 +41,6 @@ public class UI_LoginScene : UI_Scene
 
 	enum Texts
 	{
-		//ResultText
 		LoginResultText, AccountResultText
 	}
 
