@@ -28,6 +28,7 @@ public class AuthManager
 			serialNumber = "P000"										// TODO : 추후, 캐릭터를 늘린다면, 아이디 생성에서 남캐 여캐 선택할 수 있도록 함...
 		};
 		NetworkManager.Instance.Send(makeId.Write());
+		Debug.Log("계정 생성 요청을 서버에게 보냄...");
 		// --> 결과는 핸들러에서 받아옴....
 	}
 	
