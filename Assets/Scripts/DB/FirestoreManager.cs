@@ -5,6 +5,7 @@ using Firebase;
 using Firebase.Firestore;
 using UnityEngine;
 using System.Threading.Tasks;
+using UnityEngine.Serialization;
 
 #region 데이터 클래스 정의
 [Serializable]
@@ -13,7 +14,7 @@ public class CharacterInfoData
 	public string serialNumber;
 	public string level;	
 	public string nickName;
-	public string needEXP;
+	public string needExp;
 	public string dropExp;
 	public string invincibility;
 	public string maxHp;

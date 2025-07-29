@@ -632,6 +632,7 @@ public class S_BroadcastEntityInfoChange : IPacket
 {
 	public int ID;
 	public int entityType;
+	public int currentExp;
 	public int currentLevel;
 	public int currentHp;
 	public bool live;
@@ -647,6 +648,8 @@ public class S_BroadcastEntityInfoChange : IPacket
 		this.ID = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
 		this.entityType = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		this.currentExp = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
 		this.currentLevel = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
@@ -669,6 +672,8 @@ public class S_BroadcastEntityInfoChange : IPacket
 		Array.Copy(BitConverter.GetBytes(this.ID), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
 		Array.Copy(BitConverter.GetBytes(this.entityType), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(this.currentExp), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
 		Array.Copy(BitConverter.GetBytes(this.currentLevel), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);

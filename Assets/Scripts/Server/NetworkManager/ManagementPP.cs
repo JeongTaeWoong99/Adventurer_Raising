@@ -185,14 +185,17 @@ public class ManagementPP
                 // 레벨 변경(두개의 레벨이 다름)
                 if (p.currentLevel != player.playerInfoState.Level)
                 {
-                    //Debug.Log(p.ID + "의 레벨 변경됨." + player.playerInfoState.Level + " => " + p.currentLevel);
                     player.playerInfoState.Level = p.currentLevel;
                     player.playerInfoState.SetStat(player.playerInfoState.Level);
                 }
                 else if (p.currentLevel == 0)
                 {
-                    //Debug.Log(p.ID + "의 레벨은 0. 확인 필요");
+                    Debug.Log(p.ID + "의 레벨은 0. 확인 필요");
                 }
+                
+                // Exp변경
+                if (p.currentExp != player.playerInfoState.Exp)
+                    player.playerInfoState.Exp = p.currentExp;
                         
                 // 무적 변경(두개의 무적이 다름)
                 if (p.invincibility != player.playerInfoState.Invincibility)
@@ -204,12 +207,14 @@ public class ManagementPP
                 {
                     //Debug.Log(p.invincibility + " => " +  player.playerInfoState.Invincibility);
                 }
-
+                
+                // 라이브 변경
                 if (p.live != player.playerInfoState.Live)
                 {
                     //Debug.Log(p.ID + "의 생존 변경됨." + player.playerInfoState.Live + " => " + p.live);
                     player.playerInfoState.Live = p.live;
                 }
+                
             }
         }
         else if (p.entityType ==  (int)Define.Layer.Object)

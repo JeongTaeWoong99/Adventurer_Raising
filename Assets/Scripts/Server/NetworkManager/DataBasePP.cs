@@ -61,12 +61,17 @@ public class DataBasePP
 			DBManager.RealTime.myDefaultData.savedScene    = p.savedScene;
 			
 			// 필요 시작 화면 정보 세팅
-			UI_LoginScene.NickNameText.text         = p.nickname;
-			UI_LoginScene.SerialNumberNameText.text = p.serialNumber;
-			UI_LoginScene.CurrentLevelText.text     = p.currentHp.ToString();
-			UI_LoginScene.CurrentExpText.text       = p.currentExp.ToString();
-			UI_LoginScene.CurrentGoldText.text      = p.currentGold.ToString();
-			UI_LoginScene.SavedSceneText.text       = p.savedScene;
+			UI_LoginScene.NickNameText.text = p.nickname;
+			if  (p.serialNumber == "P000") UI_LoginScene.SerialNumberNameText.text = "검사";
+			else						   UI_LoginScene.SerialNumberNameText.text = "직업 분류 없음";
+			UI_LoginScene.CurrentHpText.text	= p.currentHp.ToString();
+			UI_LoginScene.CurrentLevelText.text = p.currentLevel.ToString();
+			UI_LoginScene.CurrentExpText.text   = p.currentExp.ToString();
+			UI_LoginScene.CurrentGoldText.text  = p.currentGold.ToString();
+			if      (p.savedScene == "Village") UI_LoginScene.SavedSceneText.text = "마을";
+			else if (p.savedScene == "Stage1")  UI_LoginScene.SavedSceneText.text = "사냥터1";
+			else if (p.savedScene == "Stage2")  UI_LoginScene.SavedSceneText.text = "사냥터2";
+			else							    UI_LoginScene.SavedSceneText.text = "마을";
 		}
 		// 로그인 실패
 		else

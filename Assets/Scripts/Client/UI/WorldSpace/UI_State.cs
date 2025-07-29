@@ -6,7 +6,7 @@ public class UI_State : UI_Base
 {
     private Slider          hpSlider;
     private TextMeshProUGUI nickNameText;
-    private TextMeshProUGUI levelText;
+    [HideInInspector] public TextMeshProUGUI levelText;
     
     private InfoState infoState;
     private Camera    mainCamera;
