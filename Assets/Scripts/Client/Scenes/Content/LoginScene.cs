@@ -15,7 +15,9 @@ public class LoginScene : BaseScene
         
         StartCoroutine(WaitForAsync());
     }
-
+    
+    // 생성 순서
+    // DB -> Client -> Server
     private IEnumerator WaitForAsync()
     {
         // 네트워크 매니저가 존재하면, 삭제해주기.

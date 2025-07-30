@@ -4,10 +4,6 @@
 // State 클래스를 상속받아 플레이어만의 고유한 상태(경험치, 골드 등)를 관리
 public class PlayerInfoState : InfoState
 {
-	[Header("플레이어 - 서버 리얼타임 데이터베이스를 통해 세팅")]
-	[SerializeField] protected int currentExp;   // 현재 경험치
-	[SerializeField] protected int currentGold;  // 현재 보유 골드
-
 	[Header("플레이어 - 서버에서 받은 serialNumber를 통해, 제이슨 정보로 디스플레이 세팅")]
 	[SerializeField] protected int needExp;
 
@@ -28,22 +24,23 @@ public class PlayerInfoState : InfoState
 			// 레벨업 경험치 부족 -> 슬라이더만 변화
 			if (currentExp < int.Parse(playerInfo.needExp))
 			{
+				Debug.Log("1번");
 				ClientManager.UI.gameSceneUI.GetComponent<UI_GameScene>().OnExpSliderChanged(currentExp, int.Parse(playerInfo.needExp));
 			}
 			// 경험치 충분
 			else
 			{
 				string nextKey = $"{serialNumber}_{level + 1}";
+				// 최고레벨 도달하면, 슬라이더 고정 설정
 				if (dict.TryGetValue(nextKey, out playerInfo) == false)
 				{
-					// 최대 레벨 도달
-					dict.TryGetValue(key, out playerInfo);
-					ClientManager.UI.gameSceneUI.GetComponent<UI_GameScene>().OnExpSliderChanged(int.Parse(playerInfo.needExp), int.Parse(playerInfo.needExp));
+					Debug.Log("2번");
+					ClientManager.UI.gameSceneUI.GetComponent<UI_GameScene>().OnExpSliderChanged(1, 1,"MaxLevel");
 				}
 				// 다음 레벨 있음 -> 레벨업 후 세팅
 				else
 				{
-					currentExp = 0;          // exp 초기화
+					currentExp = 0;   // exp 초기화
 					level++;          // 레벨 증가
 					SetStat(level);   // 증가된 레벨로 스탯 설정
 				}
@@ -91,10 +88,6 @@ public class PlayerInfoState : InfoState
 			if (gameObject.GetComponentInChildren<UI_State>() != null)
 				gameObject.GetComponentInChildren<UI_State>().levelText.text = level.ToString();
 		}
-		
-		// 슬라이더 세팅(내 캐릭터 초기화 시)
-		if(ClientManager.Game.MyPlayerGameObject == gameObject)
-			ClientManager.UI.gameSceneUI.OnExpSliderChanged(currentExp, int.Parse(info.needExp));
 	}
 
 	public override void OnAttacked(GameObject attacker,Vector3 attackCenterVec, int damage, string effectSerial)

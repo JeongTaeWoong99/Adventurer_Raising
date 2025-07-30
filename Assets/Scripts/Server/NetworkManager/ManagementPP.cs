@@ -53,10 +53,8 @@ public class ManagementPP
                 myPlayerCon.playerInfoState.NickName      = entity.nickname;
                 myPlayerCon.playerInfoState.Hp            = entity.currentHp;
                 myPlayerCon.playerInfoState.Level         = entity.currentLevel;
-                
-                // [Header("서버 리얼타임 데이터베이스를 통해 세팅")] => 내 플레이어 전용
-                myPlayerCon.playerInfoState.Exp  = int.Parse(DBManager.RealTime.myDefaultData.currentExp);     // 따로 서버를 거치지 않고, DB통해서, 바로 세팅함...
-                myPlayerCon.playerInfoState.Gold = int.Parse(DBManager.RealTime.myDefaultData.currentGold);    // 따로 서버를 거치지 않고, DB통해서, 바로 세팅함...
+                myPlayerCon.playerInfoState.Exp           = entity.currentExp;    
+                myPlayerCon.playerInfoState.Gold          = entity.currentGold;    
                 
                 // 정보들을 바탕으로, 디스플레이
                 myPlayerCon.playerInfoState.SetStat(entity.currentLevel) ;
