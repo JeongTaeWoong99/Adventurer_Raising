@@ -31,15 +31,38 @@ namespace DummyClient
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
 		{
 			// PacketManager == ClientPacketManager.cs
-			// ★ 콜백 == null으로 넘겨주고, PacketHandler처리함.(서버 or 더미클라에서는 따로 처리할 필요 없음.)
-			//Debug.Log("OnRecvPacket...");
+            // ★ 콜백 == null으로 넘겨주고, PacketHandler처리함.(서버 or 더미클라에서는 따로 처리할 필요 없음.)
+            // Debug.Log("OnRecvPacket...");
 			PacketManager.Instance.OnRecvPacket(this, buffer);
+			
+			//Debug.Log("OnRecvPacket...");
+			
+			// 통계 업데이트 (안전하게 처리 - 실패해도 패킷 처리에 영향 없음)
+			try
+			{
+				NetworkManager.NetworkStats?.OnPacketReceived(buffer.Count);
+			}
+			catch (Exception e)
+			{
+				// 통계 실패해도 무시 (패킷 처리는 이미 완료됨)
+				Debug.LogWarning($"Network stats failed: {e.Message}");
+			}
 		}
 
 		public override void OnSend(int numOfBytes)
 		{
 			//Debug.Log($"OnSend : {numOfBytes}");
 			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
+			
+			// 통계 업데이트 (안전하게 처리)
+			try
+			{
+				NetworkManager.NetworkStats?.OnPacketSent(numOfBytes);
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning($"Network send stats failed: {e.Message}");
+			}
 		}
 	}
 }

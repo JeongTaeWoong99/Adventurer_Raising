@@ -52,9 +52,13 @@ public class UI_GameScene : UI_Scene
         GetObject((int)GameObjects.GoToVillageDeathPanel).gameObject.SetActive(false);	// 마을로돌아아기 패널 끄기
     }
     
-    public void OnExpSliderChanged(int exp, int maxExp)
+    public void OnExpSliderChanged(int exp, int maxExp, string maxLevelTextSet = null)
     {
-        GetText((int)Texts.ExpText).text = exp + " / " + maxExp;
+        Debug.Log("OnExpSliderChanged로 들어온 정보" + exp + " / " + maxExp + " / " + maxLevelTextSet);
+        // 최고 레벨 텍스트 설정
+        if (maxLevelTextSet != null) GetText((int)Texts.ExpText).text = maxLevelTextSet;
+        // 일반 레벨 텍스트 설정
+        else                         GetText((int)Texts.ExpText).text = exp + " / " + maxExp;
         GetSlider((int)Sliders.ExpSlider).maxValue = maxExp;
         GetSlider((int)Sliders.ExpSlider).value    = exp;
     }

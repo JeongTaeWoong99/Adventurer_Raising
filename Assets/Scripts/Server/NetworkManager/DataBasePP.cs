@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class DataBasePP
 {
@@ -39,6 +40,7 @@ public class DataBasePP
 	// 로그인 피드백
 	public void LoginResult(S_LoginResult p)
 	{
+		Debug.Log("LoginResult" + p.isSuccess);
 		UI_Manage.LoadingPanelObject.SetActive(false);		// 로딩 off
 		UI_LoginScene.LoginResultText.text = p.resultText;  // 결과 텍스트 변경
 		

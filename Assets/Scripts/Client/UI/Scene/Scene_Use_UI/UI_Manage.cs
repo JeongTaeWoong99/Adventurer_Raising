@@ -8,7 +8,8 @@ public class UI_Manage : UI_Scene
 	public GameObject ToolTip			 => GetObject((int)GameObjects.ToolTip);
 		
 	[Header("TextMeshProUGUI")]
-	public TextMeshProUGUI ToolTipNameText   => GetText((int)Texts.ToolTipNameText);
+	public TextMeshProUGUI ToolTipNameText => GetText((int)Texts.ToolTipNameText);
+	public TextMeshProUGUI PktInfoText     => GetText((int)Texts.PktInfoText);
 	
 	enum GameObjects
 	{
@@ -17,7 +18,7 @@ public class UI_Manage : UI_Scene
 	
 	enum Texts
 	{
-		ToolTipNameText,
+		ToolTipNameText, PktInfoText
 	}
 
 	public override void Init()

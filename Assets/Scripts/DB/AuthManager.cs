@@ -50,6 +50,7 @@ public class AuthManager
 			password = UI_LoginScene.PasswordPlaceholderText.text
 		};
 		NetworkManager.Instance.Send(login.Write());
+		Debug.Log("OnRequestLogin");
 		// --> 결과는 핸들러에서 받아옴....
 	}
 }

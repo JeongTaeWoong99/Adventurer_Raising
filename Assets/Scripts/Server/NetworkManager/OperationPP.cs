@@ -149,7 +149,7 @@ public class OperationPP
 				if (NetworkManager.Management.playerDic.TryGetValue(p.ID, out var player))
 				{	
 					// 각자의 클라에서 실행하는 작업과 동일
-					Debug.Log("대쉬 방향 => " + new Vector3(p.dirX, p.dirY, p.dirZ));
+					// Debug.Log("대쉬 방향 => " + new Vector3(p.dirX, p.dirY, p.dirZ));
 					player.dir   = new Vector3(p.dirX, p.dirY, p.dirZ);
 					player.Anime = (Define.Anime)p.animationID;
 				}

@@ -309,6 +309,8 @@ public class S_BroadcastEntityList : IPacket
 		public string nickname;
 		public int currentLevel;
 		public int currentHp;
+		public int currentExp;
+		public int currentGold;
 		public bool live;
 		public bool invincibility;
 		public float posX;
@@ -336,6 +338,10 @@ public class S_BroadcastEntityList : IPacket
 			this.currentLevel = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 			count += sizeof(int);
 			this.currentHp = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+			count += sizeof(int);
+			this.currentExp = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+			count += sizeof(int);
+			this.currentGold = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 			count += sizeof(int);
 			this.live = BitConverter.ToBoolean(segment.Array, segment.Offset + count);
 			count += sizeof(bool);
@@ -373,6 +379,10 @@ public class S_BroadcastEntityList : IPacket
 			Array.Copy(BitConverter.GetBytes(this.currentLevel), 0, segment.Array, segment.Offset + count, sizeof(int));
 			count += sizeof(int);
 			Array.Copy(BitConverter.GetBytes(this.currentHp), 0, segment.Array, segment.Offset + count, sizeof(int));
+			count += sizeof(int);
+			Array.Copy(BitConverter.GetBytes(this.currentExp), 0, segment.Array, segment.Offset + count, sizeof(int));
+			count += sizeof(int);
+			Array.Copy(BitConverter.GetBytes(this.currentGold), 0, segment.Array, segment.Offset + count, sizeof(int));
 			count += sizeof(int);
 			Array.Copy(BitConverter.GetBytes(this.live), 0, segment.Array, segment.Offset + count, sizeof(bool));
 			count += sizeof(bool);

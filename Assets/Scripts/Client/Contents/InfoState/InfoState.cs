@@ -13,6 +13,8 @@ public class InfoState : MonoBehaviour
     [SerializeField] protected int    level;        
     [SerializeField] protected string nickName;     
     [SerializeField] protected int    currentHp;    
+    [SerializeField] protected int    currentExp;   
+    [SerializeField] protected int    currentGold; 
     
     [Header("서버에서 받은 serialNumber를 통해, 제이슨 정보로 디스플레이 세팅")]
     [SerializeField] protected int     maxHp;               
