@@ -34,8 +34,8 @@ public class PlayerInfoState : InfoState
 				// 최고레벨 도달하면, 슬라이더 고정 설정
 				if (dict.TryGetValue(nextKey, out playerInfo) == false)
 				{
-					Debug.Log("2번");
-					ClientManager.UI.gameSceneUI.GetComponent<UI_GameScene>().OnExpSliderChanged(1, 1,"MaxLevel");
+					//Debug.Log("2번");
+					ClientManager.UI.gameSceneUI.GetComponent<UI_GameScene>().OnExpSliderChanged(1, 1,"Max");
 				}
 				// 다음 레벨 있음 -> 레벨업 후 세팅
 				else

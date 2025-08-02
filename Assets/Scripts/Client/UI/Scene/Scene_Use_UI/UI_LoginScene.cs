@@ -14,11 +14,11 @@ public class UI_LoginScene : UI_Scene
 	public GameObject StartPanel         => GetObject((int)GameObjects.StartPanel);
 	
 	[Header("TMP_InputField")]
-	public TMP_InputField EmailPlaceholderText    => GetTMP_Text((int)TMP_Texts.EmailPlaceholderText);
-	public TMP_InputField PasswordPlaceholderText => GetTMP_Text((int)TMP_Texts.PasswordPlaceholderText);
-	public TMP_InputField MakeEmailPlaceholder    => GetTMP_Text((int)TMP_Texts.MakeEmailPlaceholder);
-	public TMP_InputField MakePasswordPlaceholder => GetTMP_Text((int)TMP_Texts.MakePasswordPlaceholder);
-	public TMP_InputField MakeNickNamePlaceholder => GetTMP_Text((int)TMP_Texts.MakeNickNamePlaceholder);
+	public TMP_InputField EmailPlaceholderText    => GetInputField((int)InputFields.EmailPlaceholderText);
+	public TMP_InputField PasswordPlaceholderText => GetInputField((int)InputFields.PasswordPlaceholderText);
+	public TMP_InputField MakeEmailPlaceholder    => GetInputField((int)InputFields.MakeEmailPlaceholder);
+	public TMP_InputField MakePasswordPlaceholder => GetInputField((int)InputFields.MakePasswordPlaceholder);
+	public TMP_InputField MakeNickNamePlaceholder => GetInputField((int)InputFields.MakeNickNamePlaceholder);
 
 	[Header("TextMeshProUGUI")]
 	public TextMeshProUGUI LoginResultText   => GetText((int)Texts.LoginResultText);
@@ -41,7 +41,7 @@ public class UI_LoginScene : UI_Scene
 		LoginPanel, AccountPanel, StartPanel
 	}
 	
-	enum TMP_Texts
+	enum InputFields
 	{
 		EmailPlaceholderText, PasswordPlaceholderText, MakeEmailPlaceholder, MakePasswordPlaceholder, MakeNickNamePlaceholder
 	}
@@ -81,7 +81,7 @@ public class UI_LoginScene : UI_Scene
 		GetObject((int)GameObjects.StartPanel).gameObject.SetActive(false);   // 시작 패널 끄기		
 		
 		// TMP_텍스트 바인딩
-		Bind<TMP_InputField>(typeof(TMP_Texts));
+		Bind<TMP_InputField>(typeof(InputFields));
 		
 		// 일반 텍스트
 		Bind<TextMeshProUGUI>(typeof(Texts));
