@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class InputManager
 {
 	[Header("키보드")]
-	public Action KeyAction         = null; // 키보드 입력이 발생했을 때 실행될 이벤트
+	public Action KeyAction = null; // 키보드 입력이 발생했을 때 실행될 이벤트
 
 	[Header("마우스")]
 	public Action<Define.MouseEvent> MouseMoveAction   = null; // 이동용 마우스
@@ -78,10 +78,7 @@ public class InputManager
 		// 키보드 입력 처리
 		if (KeyAction != null)
 		{
-			if (Input.anyKey)
-			{
-				KeyAction.Invoke();
-			}
+			KeyAction.Invoke();
 		}
 	}
 

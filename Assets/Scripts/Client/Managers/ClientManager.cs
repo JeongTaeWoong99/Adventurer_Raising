@@ -74,7 +74,6 @@ public class ClientManager : MonoBehaviour
         //Debug.Log("isClientInit_Complete 완료");
     }
     
-    
     private void Update()
     {
         // 코어

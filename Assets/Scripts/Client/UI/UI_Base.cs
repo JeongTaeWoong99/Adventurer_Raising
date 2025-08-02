@@ -16,7 +16,7 @@ public abstract class UI_Base : MonoBehaviour
 	// 자주 사용하는 UI 컴포넌트 접근 메서드들
 	protected GameObject      GetObject(int idx) { return Get<GameObject>(idx); }
 	protected TextMeshProUGUI GetText(int idx)   { return Get<TextMeshProUGUI>(idx); }
-	protected TMP_InputField  GetTMP_Text(int idx) { return Get<TMP_InputField>(idx); }
+	protected TMP_InputField  GetInputField(int idx) { return Get<TMP_InputField>(idx); }
 	protected Button          GetButton(int idx) { return Get<Button>(idx); }
 	protected Image           GetImage(int idx)  { return Get<Image>(idx); }
 	protected Slider          GetSlider(int idx) { return Get<Slider>(idx); }

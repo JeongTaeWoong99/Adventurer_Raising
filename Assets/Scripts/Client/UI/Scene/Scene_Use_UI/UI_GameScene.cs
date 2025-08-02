@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class UI_GameScene : UI_Scene
 {
+    [Header("TMP_InputField")]
+    public TMP_InputField ChatInputField => GetInputField((int)InputFields.ChatInputField);
+
     enum Sliders
     {
         ExpSlider
@@ -14,7 +17,7 @@ public class UI_GameScene : UI_Scene
     
     enum Texts
     {
-        ExpText,
+        ExpText
     }
     
     enum Buttons
@@ -24,7 +27,12 @@ public class UI_GameScene : UI_Scene
     
     enum GameObjects
     {
-        GoToVillageDeathPanel
+        DeathPanel
+    }
+    
+    enum InputFields
+    {
+        ChatInputField
     }
 
     public override void Init()
@@ -49,12 +57,15 @@ public class UI_GameScene : UI_Scene
         
         // 게임오브젝트 바인드
         Bind<GameObject>(typeof(GameObjects));
-        GetObject((int)GameObjects.GoToVillageDeathPanel).gameObject.SetActive(false);	// 마을로돌아아기 패널 끄기
+        GetObject((int)GameObjects.DeathPanel).gameObject.SetActive(false);	// 마을로돌아아기 패널 끄기
+        
+        // TMP_텍스트 바인딩
+        Bind<TMP_InputField>(typeof(InputFields));
     }
     
     public void OnExpSliderChanged(int exp, int maxExp, string maxLevelTextSet = null)
     {
-        Debug.Log("OnExpSliderChanged로 들어온 정보" + exp + " / " + maxExp + " / " + maxLevelTextSet);
+        //Debug.Log("OnExpSliderChanged로 들어온 정보" + exp + " / " + maxExp + " / " + maxLevelTextSet);
         // 최고 레벨 텍스트 설정
         if (maxLevelTextSet != null) GetText((int)Texts.ExpText).text = maxLevelTextSet;
         // 일반 레벨 텍스트 설정
@@ -106,7 +117,7 @@ public class UI_GameScene : UI_Scene
 
     public void DeathPanelSetting(bool isActive)
     {
-        GetObject((int)GameObjects.GoToVillageDeathPanel).gameObject.SetActive(isActive);	// 마을로돌아아기 패널 켜기
+        GetObject((int)GameObjects.DeathPanel).gameObject.SetActive(isActive);	// 마을로돌아아기 패널 켜기
         GetButton((int)Buttons.GoToVillageDeathButton).gameObject.SetActive(isActive);      // 마을로돌아가기 버튼 켜기
     }
     

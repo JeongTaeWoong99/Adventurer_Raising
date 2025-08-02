@@ -265,10 +265,12 @@ public class NetworkStatsPP
         {
             if (ClientManager.UI?.manageUI?.PktInfoText != null)
             {
-                // 배틀그라운드 스타일로 텍스트 구성 (고정 폭 정렬)
-                string statsText  = $"{ping,4:F0}ms\n";
-                statsText        += $"{downloadSpeed,7:F2}KB/s {downloadPacketsPerSecond,5}pkt/s {downloadPacketLoss,4:F1}% pkt loss\n";
-                statsText        += $"{uploadSpeed,7:F2}KB/s {uploadPacketsPerSecond,5}pkt/s {uploadPacketLoss,4:F1}% pkt loss";
+                // 고정 폭으로 글자 움직임 방지
+                string pingSection = $"Ping {ping:F0}ms";
+                string downSection = $"Down {downloadSpeed:F2}KB/s {downloadPacketsPerSecond}pkt/s {downloadPacketLoss:F1}% pkt loss";
+                string upSection   = $"Up {uploadSpeed:F2}KB/s {uploadPacketsPerSecond}pkt/s {uploadPacketLoss:F1}% pkt loss";
+                
+                string statsText = $"{pingSection,-20}     {downSection,-50}     {upSection}";
                 
                 ClientManager.UI.manageUI.PktInfoText.text = statsText;
             }

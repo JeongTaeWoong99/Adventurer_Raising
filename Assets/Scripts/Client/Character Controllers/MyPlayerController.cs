@@ -229,49 +229,103 @@ public class MyPlayerController  : CommonPlayerController
 		}
 	}
 
-	// 키보드 이벤트
+	// 키보드 이벤트 (통합 처리)
 	private void OnKeyEvent()
 	{
-		//대쉬
+		// 대시 (Space)
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			if (Anime != Define.Anime.Idle && Anime != Define.Anime.Run) 
-				return;
-			
-			// 마우스 위치를 이동 방향으로 설정
-			Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
-			bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f);
-			
-			dir   = movePos - transform.position;	
+			HandleDashInput();
+		}
+		
+		// 채팅 (Enter)
+		if (Input.GetKeyDown(KeyCode.Return))
+		{
+			HandleChatInput();
+		}
+		
+		// 여기에 추가 키 입력들을 넣을 수 있음
+		// 예: 인벤토리 (I키), 스킬 (Q,W,E,R) 등
+	}
+	
+	// 대시 입력 처리
+	private void HandleDashInput()
+	{
+		if (Anime != Define.Anime.Idle && Anime != Define.Anime.Run) 
+			return;
+		
+		// 마우스 위치를 이동 방향으로 설정
+		Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
+		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f);
+		
+		dir   = movePos - transform.position;	
+		dir.y = 0;
+		if (raycastHit)
+		{
+			// 내 클라 변경
+			dir   = hit.point - transform.position; // 1회 설정
 			dir.y = 0;
-			if (raycastHit)
-			{
-				// 내 클라 변경
-				dir   = hit.point - transform.position; // 1회 설정
-				dir.y = 0;
-				Anime = Define.Anime.Dash;			  // 실행
-					
-				// 즉시 행동 무브 패킷(현재 내 위치 포지션 스냅핑)
-				C_EntityMove movePacket = new C_EntityMove {
-					isInstantAction = true,
-					posX            = transform.position.x, 
-					posY            = transform.position.y, 
-					posZ            = transform.position.z
-				};
-				NetworkManager.Instance.Send(movePacket.Write());
-					
-				// 대쉬 패킷
-				C_EntityDash dashPtk = new C_EntityDash {
-					animationID = (int)Define.Anime.Dash,
-					dirX        = dir.x, 
-					dirY        = dir.y, 
-					dirZ        = dir.z
-				};
-				NetworkManager.Instance.Send(dashPtk.Write());
-			}
+			Anime = Define.Anime.Dash;			    // 실행
+				
+			// 즉시 행동 무브 패킷(현재 내 위치 포지션 스냅핑)
+			C_EntityMove movePacket = new C_EntityMove {
+				isInstantAction = true,
+				posX            = transform.position.x, 
+				posY            = transform.position.y, 
+				posZ            = transform.position.z
+			};
+			NetworkManager.Instance.Send(movePacket.Write());
+			
+			// 대쉬 패킷
+			C_EntityDash dashPtk = new C_EntityDash {
+				animationID = (int)Define.Anime.Dash,
+				dirX        = dir.x, 
+				dirY        = dir.y, 
+				dirZ        = dir.z
+			};
+			NetworkManager.Instance.Send(dashPtk.Write());
 		}
 	}
 	
+	// 채팅 입력 처리
+	private void HandleChatInput()
+	{
+		var chatField = ClientManager.UI.gameSceneUI.ChatInputField;
+		// 🔧 EventSystem 기준으로 포커스 상태 확인 (더 정확함)
+		bool isChatFocused = UnityEngine.EventSystems.EventSystem.current?.currentSelectedGameObject == chatField.gameObject;
+		
+		// 채팅창 포커스가 아닐 때, Enter => 채팅창 포커스 On 시키기
+		if (!isChatFocused)
+		{
+			//Debug.Log("채팅창 포커스 off => on");
+			chatField.ActivateInputField(); // 채팅창 포커스 On
+			return;						    // ✅ 핵심! 포커스 활성화 후 즉시 리턴
+		}
+		
+		// 채팅창 포커스일 때, Enter => 채팅 전송 
+		if (isChatFocused)
+		{
+			//Debug.Log("채팅창 포커스 on => off");
+			// 텍스트가 있음 => 서버로 전송
+			if (!string.IsNullOrEmpty(chatField.text))
+			{
+				string messageToSend = chatField.text;
+				chatField.text = ""; // 비우기
+				Debug.Log($"메시지 전송: {messageToSend}");
+				
+				// 포커스 해제 (선택사항)
+				chatField.DeactivateInputField();
+			}
+			// 텍스트가 없음
+			else
+			{
+				// Debug.Log("텍스트 입력창이 비어 있습니다. 포커스를 해제합니다.");
+				// 포커스 해제 (빈 Enter 시)
+				chatField.DeactivateInputField();
+			}
+		}
+	}
+
 	private IEnumerator CoSendPacket()
 	{
 		while (true)
