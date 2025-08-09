@@ -93,5 +93,12 @@ class PacketHandler
         S_BroadcastEntityAttackResult pkt = packet as S_BroadcastEntityAttackResult;
         ClientManager.Dispatcher.Push(() => { NetworkManager.Operation.EntityAttackResult(pkt); });
     }
+    
+    // 채팅
+    public static void S_BroadcastChattingHandler(PacketSession session, IPacket packet)
+    {
+        S_BroadcastChatting pkt = packet as S_BroadcastChatting;
+        ClientManager.Dispatcher.Push(() => { NetworkManager.Operation.Chatting(pkt); });
+    }
     # endregion
 }

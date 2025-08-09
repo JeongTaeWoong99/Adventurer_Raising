@@ -18,6 +18,9 @@ public class UI_GameScene : UI_Scene
     [Header("Sliders")]
     public Slider HpSlider       => GetSlider((int)Sliders.HpSlider);
     public Slider MpSlider       => GetSlider((int)Sliders.MpSlider);
+    
+    [Header("GameObjects")]
+    public GameObject ChatContentGroup => GetObject((int)GameObjects.ChatContentGroup);
 
     enum Sliders
     {

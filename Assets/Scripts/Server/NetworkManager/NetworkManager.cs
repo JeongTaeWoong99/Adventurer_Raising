@@ -18,14 +18,14 @@ public class NetworkManager : MonoBehaviour
     public bool isNetworkInit_Complete = false; // 네트워크가 연결되면, Connector->ServerSession에서 ture로 변경
     
     [Header("PP = Packet Processing")]
-    ManagementPP  _managementPP  = new ManagementPP();
-    OperationPP   _operationPP   = new OperationPP();
-    DataBasePP    _dataBasePP    = new DataBasePP();
+    ManagementPP    _managementPP  = new ManagementPP();
+    OperationPP     _operationPP   = new OperationPP();
+    DataBasePP      _dataBasePP    = new DataBasePP();
     NetworkStatsPP _networkStatsPP = new NetworkStatsPP();
     
-    public static ManagementPP  Management  { get { return Instance._managementPP; } }
-    public static OperationPP   Operation   { get { return Instance._operationPP; } }
-    public static DataBasePP    DataBase    { get { return Instance._dataBasePP; } }
+    public static ManagementPP   Management  { get { return Instance._managementPP; } }
+    public static OperationPP    Operation   { get { return Instance._operationPP; } }
+    public static DataBasePP     DataBase    { get { return Instance._dataBasePP; } }
     public static NetworkStatsPP NetworkStats { get { return Instance._networkStatsPP; } }
 
     // LoginScene 스크립트에서 NetworkManager가 존재하는지 확인하고 싶을 때 사용

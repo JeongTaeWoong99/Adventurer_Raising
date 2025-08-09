@@ -327,4 +327,23 @@ public class OperationPP
 		}
 	}
 	
+	// 채팅(플레이어전용)
+	public void Chatting(S_BroadcastChatting p)
+	{	
+		int    id       = p.ID;		  // 채팅을 보낸 사람 ID
+		string contents = p.contents; // 채팅 내용
+		
+		// 프리팹 생성 및 컴포넌트 받아오기
+		UI_Chatting chatClone = ClientManager.UI.MakeSubItem<UI_Chatting>(ClientManager.UI.gameSceneUI.ChatContentGroup.transform,"UI_ChattingText");
+		// 레이아웃 강제 리빌드(빌드 환경에서 초기 프레임에 레이아웃이 늦게 적용되는 문제 방지)
+		UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(ClientManager.UI.gameSceneUI.ChatContentGroup.GetComponent<RectTransform>());
+		
+		// 닉네임 확인
+		string nickName = $"Player_{id}";
+		if (NetworkManager.Management.playerDic.TryGetValue(id, out var chatPlayer) && chatPlayer != null && chatPlayer.infoState != null)
+			nickName = chatPlayer.infoState.NickName;
+		
+		// 데이터 전달(지연 적용: 내부에서 바인딩 완료 시점과 결합하여 안전 적용)
+		chatClone.SetData(nickName, contents);
+	}
 }
