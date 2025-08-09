@@ -23,7 +23,7 @@ public class GameScene : BaseScene
         ClientManager.UI.gameSceneUI.DeathPanelSetting(false); // 사망 UI 끄기
         ClientManager.UI.gameSceneUI.gameObject.SetActive(true);
         
-        gameObject.GetOrAddComponent<CursorController>();                                                                   // 커서 변경
+        gameObject.GetOrAddComponent<CursorController>();                                                     // 커서 변경
         ClientManager.Sound.Play($"Sounds/BGM/{SceneManager.GetActiveScene().name}", Define.Sound.Bgm, 0.5f); // 씬 전용 BGM 재생
         
         // mmNumber를 보내서, 세팅 피드백 받기

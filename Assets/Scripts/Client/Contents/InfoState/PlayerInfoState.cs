@@ -70,7 +70,7 @@ public class PlayerInfoState : InfoState
 		string key = $"{serialNumber}_{level}";
 		CharacterInfoData info = dict[key];
 
-		// 공통
+		// 공통 고정 설정값 업데이트
 		this.level         = level;
 		maxHp              = int.Parse(info.maxHp);
 		normalAttackDamage = int.Parse(info.normalAttackDamage);
@@ -79,15 +79,12 @@ public class PlayerInfoState : InfoState
 		// 플레이어 전용
 		needExp            = int.Parse(info.needExp);
 
-		// 체력바 만들기(앞에 값들이 설정되고 나서,....)
+		// 최초 생성(앞에 값들이 설정되고 난 후)
 		if (!gameObject.GetComponentInChildren<UI_State>())
 			ClientManager.UI.MakeWorldSpaceUI<UI_State>(transform);
-		else
-		{
-			// 레벨 ui 변경(SetStat가 호출되는 경우는 레벨이 변경될 경우에 호출됨...)
-			if (gameObject.GetComponentInChildren<UI_State>() != null)
-				gameObject.GetComponentInChildren<UI_State>().levelText.text = level.ToString();
-		}
+		
+		// 11시 스테이트 HUD 갱신
+		ClientManager.UI.gameSceneUI.OnStateChange(Hp,MaxHp,9999,9999, nickName);
 	}
 
 	public override void OnAttacked(GameObject attacker,Vector3 attackCenterVec, int damage, string effectSerial)

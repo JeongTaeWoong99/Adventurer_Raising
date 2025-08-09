@@ -1,7 +1,9 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 월드 스페이스에서 각자 머리 위에 뜨는 상태 UI
 public class UI_State : UI_Base
 {
     private Slider          hpSlider;
@@ -63,7 +65,11 @@ public class UI_State : UI_Base
         // 위치 업데이트
         transform.position = parentTransform.position + Vector3.up * offsetY;
         transform.rotation = mainCamera.transform.rotation;
-
+    }
+    
+    // 상태 업데이트 
+    private void FixedUpdate()
+    {
         // HP 비율 업데이트
         float ratio = infoState.Hp / (float)infoState.MaxHp;
         

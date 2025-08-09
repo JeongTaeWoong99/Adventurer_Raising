@@ -7,17 +7,26 @@ using UnityEngine.UI;
 
 public class UI_GameScene : UI_Scene
 {
+    [Header("TextMeshProUGUI")]
+    public TextMeshProUGUI HpText       => GetText((int)Texts.HpText);
+    public TextMeshProUGUI MpText       => GetText((int)Texts.MpText);
+    public TextMeshProUGUI NickNameText => GetText((int)Texts.NickNameText);
+    
     [Header("TMP_InputField")]
     public TMP_InputField ChatInputField => GetInputField((int)InputFields.ChatInputField);
+    
+    [Header("Sliders")]
+    public Slider HpSlider       => GetSlider((int)Sliders.HpSlider);
+    public Slider MpSlider       => GetSlider((int)Sliders.MpSlider);
 
     enum Sliders
     {
-        ExpSlider
+        ExpSlider, HpSlider, MpSlider,
     }
     
     enum Texts
     {
-        ExpText
+        ExpText, NickNameText, HpText, MpText
     }
     
     enum Buttons
@@ -27,7 +36,7 @@ public class UI_GameScene : UI_Scene
     
     enum GameObjects
     {
-        DeathPanel
+        DeathPanel, ChatContentGroup
     }
     
     enum InputFields
@@ -62,14 +71,28 @@ public class UI_GameScene : UI_Scene
         // TMP_텍스트 바인딩
         Bind<TMP_InputField>(typeof(InputFields));
     }
+
+    public void OnStateChange(int hp, int maxHp, int mp, int maxMp, string nickName = null)
+    {
+        // 닉네임 텍스트 설정
+        if(nickName != null)
+            NickNameText.text = nickName;
+        
+        // Hp 설정 
+        HpText.text       = hp + " / " + maxHp;
+        HpSlider.maxValue = maxHp;
+        HpSlider.value    = hp;
+        
+        // Mp 설정
+        MpText.text       = mp + " / " + maxMp;
+        MpSlider.maxValue = maxMp;
+        MpSlider.value    = mp;
+    }
     
     public void OnExpSliderChanged(int exp, int maxExp, string maxLevelTextSet = null)
     {
-        //Debug.Log("OnExpSliderChanged로 들어온 정보" + exp + " / " + maxExp + " / " + maxLevelTextSet);
-        // 최고 레벨 텍스트 설정
-        if (maxLevelTextSet != null) GetText((int)Texts.ExpText).text = maxLevelTextSet;
-        // 일반 레벨 텍스트 설정
-        else                         GetText((int)Texts.ExpText).text = exp + " / " + maxExp;
+        if (maxLevelTextSet != null) GetText((int)Texts.ExpText).text = maxLevelTextSet;      // 최고 레벨 텍스트 설정  
+        else                         GetText((int)Texts.ExpText).text = exp + " / " + maxExp; // 일반 레벨 텍스트 설정
         GetSlider((int)Sliders.ExpSlider).maxValue = maxExp;
         GetSlider((int)Sliders.ExpSlider).value    = exp;
     }

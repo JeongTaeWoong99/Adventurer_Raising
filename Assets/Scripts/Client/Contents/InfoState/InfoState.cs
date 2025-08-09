@@ -52,12 +52,27 @@ public class InfoState : MonoBehaviour
     public int Hp
     {
         get => currentHp;
-        set => currentHp = value;
+        set
+        {
+            currentHp = value;
+            
+            // 내 캐릭터의 HP가 변경될 때 게임씬 UI 갱신 (MP는 임시 고정값 9999)
+            if (ClientManager.Game.MyPlayerGameObject == gameObject && ClientManager.UI.gameSceneUI != null && maxHp > 0)
+                ClientManager.UI.gameSceneUI.OnStateChange(currentHp, maxHp, 9999, 9999);
+        }
     }
     public int MaxHp
     {
         get => maxHp;
-        set => maxHp = value;
+        set
+        {
+            maxHp = value;
+            // MaxHp 세팅 시에도 최신 HP/MaxHp를 반영하도록 UI 갱신
+            if (ClientManager.Game.MyPlayerGameObject == gameObject && ClientManager.UI.gameSceneUI != null)
+            {
+                ClientManager.UI.gameSceneUI.OnStateChange(currentHp, maxHp, 9999, 9999, nickName);
+            }
+        }
     }
     public Vector3 NormalAttackRange
     {

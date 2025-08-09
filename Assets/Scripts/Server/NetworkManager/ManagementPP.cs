@@ -53,11 +53,11 @@ public class ManagementPP
                 myPlayerCon.playerInfoState.NickName      = entity.nickname;
                 myPlayerCon.playerInfoState.Hp            = entity.currentHp;
                 myPlayerCon.playerInfoState.Level         = entity.currentLevel;
-                myPlayerCon.playerInfoState.Exp           = entity.currentExp;    
+                myPlayerCon.playerInfoState.Exp           = entity.currentExp;
                 myPlayerCon.playerInfoState.Gold          = entity.currentGold;    
                 
                 // 정보들을 바탕으로, 디스플레이
-                myPlayerCon.playerInfoState.SetStat(entity.currentLevel) ;
+                myPlayerCon.playerInfoState.SetStat(entity.currentLevel);
             }
             // 다른 플레이어, 오브젝트, 몬스터
             else
