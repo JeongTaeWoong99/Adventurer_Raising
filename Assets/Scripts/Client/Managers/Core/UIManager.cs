@@ -127,10 +127,10 @@ public class UIManager
 		if (string.IsNullOrEmpty(name))
 			name = typeof(T).Name;
 
-		GameObject go = ClientManager.Resource.R_Instantiate($"UI/SubItem/{name}");
-		if (parent != null)
-			go.transform.SetParent(parent);
-
+        GameObject go = ClientManager.Resource.R_Instantiate($"UI/SubItem/{name}");
+        if (parent != null)
+            go.transform.SetParent(parent, false); // UI는 로컬 기준 유지가 안전
+		
 		return Util.GetOrAddComponent<T>(go);
 	}
 

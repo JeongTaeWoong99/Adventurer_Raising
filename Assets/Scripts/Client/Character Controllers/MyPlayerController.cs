@@ -305,23 +305,24 @@ public class MyPlayerController  : CommonPlayerController
 		// 채팅창 포커스일 때, Enter => 채팅 전송 
 		if (isChatFocused)
 		{
-			//Debug.Log("채팅창 포커스 on => off");
 			// 텍스트가 있음 => 서버로 전송
 			if (!string.IsNullOrEmpty(chatField.text))
 			{
-				string messageToSend = chatField.text;
-				chatField.text = ""; // 비우기
-				Debug.Log($"메시지 전송: {messageToSend}");
+				C_Chatting chat = new C_Chatting {
+					contents = chatField.text
+				};
+				NetworkManager.Instance.Send(chat.Write());
 				
-				// 포커스 해제 (선택사항)
-				chatField.DeactivateInputField();
+				//Debug.Log($"메시지 전송: {chatField.text}");
+				
+				chatField.text = "";			  // 비우기
+				chatField.DeactivateInputField(); // 포커스 해제
 			}
 			// 텍스트가 없음
 			else
 			{
-				// Debug.Log("텍스트 입력창이 비어 있습니다. 포커스를 해제합니다.");
-				// 포커스 해제 (빈 Enter 시)
-				chatField.DeactivateInputField();
+				//Debug.Log("텍스트 입력창이 비어 있습니다. 포커스를 해제합니다.");
+				chatField.DeactivateInputField(); // 포커스 해제
 			}
 		}
 	}
