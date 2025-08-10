@@ -84,7 +84,8 @@ public class PlayerInfoState : InfoState
 			ClientManager.UI.MakeWorldSpaceUI<UI_State>(transform);
 		
 		// 11시 스테이트 HUD 갱신
-		ClientManager.UI.gameSceneUI.OnStateChange(Hp,MaxHp,9999,9999, nickName);
+		if(ClientManager.Game.MyPlayerGameObject == gameObject)
+			ClientManager.UI.gameSceneUI.OnStateChange(Hp,MaxHp,9999,9999, nickName);
 	}
 
 	public override void OnAttacked(GameObject attacker,Vector3 attackCenterVec, int damage, string effectSerial)

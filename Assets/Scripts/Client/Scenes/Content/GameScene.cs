@@ -20,8 +20,8 @@ public class GameScene : BaseScene
         if(ClientManager.UI.gameSceneUI == null)
             ClientManager.UI.ShowSceneUI<UI_Scene>("UI_GameScene");
         yield return new WaitUntil(() => ClientManager.UI.gameSceneUI); // gameSceneUI가 생성되는 것을 기다리기...
-        ClientManager.UI.gameSceneUI.DeathPanelSetting(false); // 사망 UI 끄기
-        ClientManager.UI.gameSceneUI.gameObject.SetActive(true);
+        ClientManager.UI.gameSceneUI.gameObject.SetActive(true); // 꺼져 있는 경우 켜주기                      
+        ClientManager.UI.gameSceneUI.GameSecneUiSetting();       // 세팅 작업
         
         gameObject.GetOrAddComponent<CursorController>();                                                     // 커서 변경
         ClientManager.Sound.Play($"Sounds/BGM/{SceneManager.GetActiveScene().name}", Define.Sound.Bgm, 0.5f); // 씬 전용 BGM 재생

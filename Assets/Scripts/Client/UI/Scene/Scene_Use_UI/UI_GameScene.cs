@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UI_GameScene : UI_Scene
@@ -11,6 +12,7 @@ public class UI_GameScene : UI_Scene
     public TextMeshProUGUI HpText       => GetText((int)Texts.HpText);
     public TextMeshProUGUI MpText       => GetText((int)Texts.MpText);
     public TextMeshProUGUI NickNameText => GetText((int)Texts.NickNameText);
+    public TextMeshProUGUI MapNameText  => GetText((int)Texts.MapNameText);
     
     [Header("TMP_InputField")]
     public TMP_InputField ChatInputField => GetInputField((int)InputFields.ChatInputField);
@@ -29,7 +31,7 @@ public class UI_GameScene : UI_Scene
     
     enum Texts
     {
-        ExpText, NickNameText, HpText, MpText
+        ExpText, NickNameText, HpText, MpText, MapNameText
     }
     
     enum Buttons
@@ -73,6 +75,18 @@ public class UI_GameScene : UI_Scene
         
         // TMP_텍스트 바인딩
         Bind<TMP_InputField>(typeof(InputFields));
+    }
+
+    // 게임씬에 들어오고, 생성이 완료된 후, UI 세팅해
+    public void GameSecneUiSetting()
+    {
+        // 사망 UI 끄기
+        DeathPanelSetting(false);                
+        
+        // 텍스트 설정     
+        if      (SceneManager.GetActiveScene().name == "Village") MapNameText.text = "마을";
+        else if (SceneManager.GetActiveScene().name == "Stage1")  MapNameText.text = "사냥터1";
+        else if (SceneManager.GetActiveScene().name == "Stage2")  MapNameText.text = "사냥터2";
     }
 
     public void OnStateChange(int hp, int maxHp, int mp, int maxMp, string nickName = null)
@@ -143,8 +157,8 @@ public class UI_GameScene : UI_Scene
 
     public void DeathPanelSetting(bool isActive)
     {
-        GetObject((int)GameObjects.DeathPanel).gameObject.SetActive(isActive);	// 마을로돌아아기 패널 켜기
-        GetButton((int)Buttons.GoToVillageDeathButton).gameObject.SetActive(isActive);      // 마을로돌아가기 버튼 켜기
+        GetObject((int)GameObjects.DeathPanel).gameObject.SetActive(isActive);	       // 마을로돌아아기 패널 켜기
+        GetButton((int)Buttons.GoToVillageDeathButton).gameObject.SetActive(isActive); // 마을로돌아가기 버튼 켜기
     }
     
     private void OnExitGame(PointerEventData data)

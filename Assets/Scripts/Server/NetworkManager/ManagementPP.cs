@@ -36,13 +36,14 @@ public class ManagementPP
             if (entity.entityType == (int)Define.Layer.Player && entity.isSelf)
             {
                 GameObject myPlayer = ClientManager.Game.Spawn(Define.WorldObject.MyPlayer, $"{entity.serialNumber}");
-                Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(myPlayer);                        // 카메라 따라가기 on
-                myPlayerCon = myPlayer.GetOrAddComponent<MyPlayerController>();                                          // 내 캐릭터에는 MyPlayerController 붙여주기
+                Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(myPlayer);                         // 디스플레이 카메라 따라가기 on
+                GameObject.FindGameObjectWithTag("MiniCamera").GetOrAddComponent<CameraController>().SetPlayer(myPlayer); // 미니맵 카메라 따라가기 on
+                myPlayerCon = myPlayer.GetOrAddComponent<MyPlayerController>();                                           // 내 캐릭터에는 MyPlayerController 붙여주기
                 playerDic.Add(entity.ID, myPlayerCon);
                 myPlayerCon.ID = entity.ID;
-                myPlayerCon.characterController.enabled            = false;                                              // CharacterController 일시 비활성화
-                myPlayerCon.characterController.transform.position = new Vector3(entity.posX, entity.posY, entity.posZ); // 절대 위치 설정
-                myPlayerCon.characterController.enabled            = true;                                               // CharacterController 재활성화     
+                myPlayerCon.characterController.enabled            = false;                                               // CharacterController 일시 비활성화
+                myPlayerCon.characterController.transform.position = new Vector3(entity.posX, entity.posY, entity.posZ);  // 절대 위치 설정
+                myPlayerCon.characterController.enabled            = true;                                                // CharacterController 재활성화     
                 myPlayerCon.transform.rotation = Quaternion.Euler(0, entity.rotationY, 0);
                 myPlayerCon.Anime = (Define.Anime)System.Enum.Parse(typeof(Define.Anime),entity.animationID.ToString());
 
