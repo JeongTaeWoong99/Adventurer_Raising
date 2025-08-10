@@ -46,6 +46,6 @@
 
     public enum CameraMode
     {
-        QuarterView,
+        QuarterView, MiniMap
     }
 }
