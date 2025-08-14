@@ -25,6 +25,24 @@ public class AnimationEventReceiver : MonoBehaviour
     
     public void OnHitEvent()
     {
+		// 공통 영역
+		// 히트 이펙트(E 이펙트 N 노말 A 어택)
+		// 프리팹 있는지 확인
+		string normalAttackEffectPath = "Prefabs/" + "E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum;
+		GameObject original = ClientManager.Resource.R_Load<GameObject>(normalAttackEffectPath);
+		if (original)
+		{
+			// Debug.Log("이팩트 존재");
+			// x z 로테이션은 이펙트의 설정값 사용
+			// y는 플레이어가 바라보는 방향 사용 
+			Quaternion spawnRot = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * original.transform.rotation;
+			ClientManager.Resource.R_Instantiate("E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum, null, transform.position + Vector3.up * 1.5f, spawnRot);
+		}
+		else
+		{
+			//Debug.Log("이팩트 없음");
+		}
+		
 	    // 플레이어는 자신 클라에서 판단하고 보내줌...
 	    if (ClientManager.Game.MyPlayerGameObject == gameObject)
 	    {

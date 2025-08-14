@@ -113,8 +113,6 @@ public class NetworkManager : MonoBehaviour
         NetworkStats.Clear();
     }
     
-
-    
     // 게임 종료 시, 서버 연결 끊기
     private void OnApplicationQuit()
     {

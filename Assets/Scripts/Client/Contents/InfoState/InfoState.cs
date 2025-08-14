@@ -107,6 +107,21 @@ public class InfoState : MonoBehaviour
     // 히트 공통
     public virtual void OnAttacked(GameObject attacker, Vector3 moveDir, int damage, string effectSerial)
     {
+        // 공통 영역
+        // 히트 이펙트(E 이펙트 N 노말 A 어택)
+        // 프리팹 있는지 확인
+        string normalAttackEffectPath = "Prefabs/" + effectSerial;
+        GameObject original = ClientManager.Resource.R_Load<GameObject>(normalAttackEffectPath);
+        if (original)
+        {
+            Debug.Log("이팩트 존재");
+            ClientManager.Resource.R_Instantiate(effectSerial, null, transform.position + Vector3.up * 1.5f);
+        }
+        else
+        {
+            Debug.Log("이팩트 없음");
+        }
+    
         // 사망
         if (Hp == 0)
         {
