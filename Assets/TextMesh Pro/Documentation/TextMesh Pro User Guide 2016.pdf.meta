@@ -1,8 +1,7 @@
 fileFormatVersion: 2
-guid: f952c082cb03451daed3ee968ac6c63e
-timeCreated: 1432805430
-licenseType: Store
-NativeFormatImporter:
+guid: 1b8d251f9af63b746bf2f7ffe00ebb9b
+DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -11,5 +10,5 @@ AssetOrigin:
   productId: 309498
   packageName: Free Slash VFX
   packageVersion: 1.0
-  assetPath: Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset
+  assetPath: Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf
   uploadId: 738318

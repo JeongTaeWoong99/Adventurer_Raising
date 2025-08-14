@@ -31,15 +31,11 @@ public class ResourceManager
         return Resources.Load<T>(path);
     }
 
-    // ★ 프리팹을 인스턴스화하는 메서드
-    public GameObject R_Instantiate(string path, Transform parent = null,Vector3 createPos = default,int otherNumber = 0)
+	// ★ 프리팹을 인스턴스화하는 메서드 (기본)
+	public GameObject R_Instantiate(string path, Transform parent = null,Vector3 createPos = default)
     {
         // 프리팹 로드
         GameObject original = R_Load<GameObject>($"Prefabs/{path}");
-        
-        // 리소스 후처리
-        if (original.GetComponent<DamageNumberMesh>())
-            original.GetComponent<DamageNumberMesh>().number = otherNumber;
         
         // 로드 실패
         if (original == null)
@@ -66,6 +62,75 @@ public class ResourceManager
         }
 
     }
+
+	// ★ 프리팹 인스턴스화 오버로드 (데미지 숫자 전달용)
+	public GameObject R_Instantiate(string path, Transform parent, Vector3 createPos, int settingNumber)
+	{
+		// 프리팹 로드
+		GameObject original = R_Load<GameObject>($"Prefabs/Number/{path}");
+
+		// 로드 실패
+		if (original == null)
+		{
+			Debug.Log($"Failed to load prefab : {path}");
+			return null;
+		}
+
+		GameObject go;
+		// Poolable 컴포넌트가 있음 -> 오브젝트 풀링 사용
+		if (original.GetComponent<Poolable>() != null)
+		{
+			go = ClientManager.Pool.Pop(original, parent).gameObject;
+			go.transform.position += createPos;
+		}
+		// Poolable 컴포넌트가 없음 -> 일반 인스턴스화
+		else
+		{
+			go = Object.Instantiate(original, parent);
+			go.name = original.name;
+			go.transform.position += createPos;
+		}
+
+		// 리소스 후처리 (데미지 넘버는 인스턴스에서 설정)
+		var damageNumberMesh = go.GetComponent<DamageNumberMesh>();
+		if (damageNumberMesh)
+			damageNumberMesh.number = settingNumber;
+
+		return go;
+	}
+
+	// ★ 프리팹 인스턴스화 오버로드 (회전 전달용)
+	public GameObject R_Instantiate(string path, Transform parent, Vector3 createPos, Quaternion rotation)
+	{
+		// 프리팹 로드
+		GameObject original = R_Load<GameObject>($"Prefabs/{path}");
+		
+		// 로드 실패
+		if (original == null)
+		{
+			Debug.Log($"Failed to load prefab : {path}");
+			return null;
+		}
+
+		GameObject go;
+		// Poolable 컴포넌트가 있음 -> 오브젝트 풀링 사용
+		if (original.GetComponent<Poolable>() != null)
+		{
+			go = ClientManager.Pool.Pop(original, parent).gameObject;
+			go.transform.rotation = rotation;      // 회전 적용
+			go.transform.position += createPos;    // 위치 적용
+			return go;
+		}
+		// Poolable 컴포넌트가 없음 -> 일반 인스턴스화
+		else
+		{
+			go = Object.Instantiate(original, parent);
+			go.name = original.name;
+			go.transform.rotation = rotation;      // 회전 적용
+			go.transform.position += createPos;    // 위치 적용
+			return go;
+		}
+	}
     
     // 오브젝트 풀링을 위한, R_Destroy
     public void R_Destroy(GameObject go)
