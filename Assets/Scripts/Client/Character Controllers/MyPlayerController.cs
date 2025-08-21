@@ -238,6 +238,17 @@ public class MyPlayerController  : CommonPlayerController
 			HandleDashInput();
 		}
 		
+		// 스킬 (Q W E R)
+		if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.R))
+		{
+			// 레벨 제한으로 잠금된 스킬은 입력 차단
+			if      (Input.GetKeyDown(KeyCode.Q) && ClientManager.UI.gameSceneUI.IsSkillUnlocked("Q") == false) return;
+			else if (Input.GetKeyDown(KeyCode.W) && ClientManager.UI.gameSceneUI.IsSkillUnlocked("W") == false) return;
+			else if (Input.GetKeyDown(KeyCode.E) && ClientManager.UI.gameSceneUI.IsSkillUnlocked("E") == false) return;
+			else if (Input.GetKeyDown(KeyCode.R) && ClientManager.UI.gameSceneUI.IsSkillUnlocked("R") == false) return;
+			HandleSkillInput();
+		}
+		
 		// 채팅 (Enter)
 		if (Input.GetKeyDown(KeyCode.Return))
 		{
@@ -258,10 +269,10 @@ public class MyPlayerController  : CommonPlayerController
 		Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
 		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f);
 		
-		dir   = movePos - transform.position;	
-		dir.y = 0;
+		// dir   = movePos - transform.position;	
+		// dir.y = 0;
 		if (raycastHit)
-		{
+		{ 
 			// 내 클라 변경
 			dir   = hit.point - transform.position; // 1회 설정
 			dir.y = 0;
@@ -284,6 +295,67 @@ public class MyPlayerController  : CommonPlayerController
 				dirZ        = dir.z
 			};
 			NetworkManager.Instance.Send(dashPtk.Write());
+		}
+	}
+	
+	// 스킬 입력(Q W E R)
+	private void HandleSkillInput()
+	{
+		if (Anime != Define.Anime.Idle && Anime != Define.Anime.Run) 
+			return;
+		
+		// 마우스 위치를 스킬 방향(+위치)으로 설정
+		Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
+		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f);
+		
+		// dir   = movePos - transform.position;	
+		// dir.y = 0;
+		if (raycastHit)
+		{
+			// 내 클라 바라보는 방향 변경
+			dir   = hit.point - transform.position; // 1회 설정
+			dir.y = 0;
+			
+			// 어떤 스킬 키(Q/W/E/R)를 눌렀는지 기록
+			if      (Input.GetKeyDown(KeyCode.Q)) currentSkillKey = "Q";
+			else if (Input.GetKeyDown(KeyCode.W)) currentSkillKey = "W";
+			else if (Input.GetKeyDown(KeyCode.E)) currentSkillKey = "E";
+			else if (Input.GetKeyDown(KeyCode.R)) currentSkillKey = "R";
+			else                                  currentSkillKey = "";
+
+			// 유효 키가 아니면 리턴
+			if (string.IsNullOrEmpty(currentSkillKey))
+				return;
+
+			// 쿨타임 중이면 사용 불가
+			if (ClientManager.UI.gameSceneUI != null && ClientManager.UI.gameSceneUI.IsSkillOnCooldown(currentSkillKey))
+				return;
+
+			skillCreatePos = hit.point;			 // 스킬 생성 위치(고정된 위치 생성 스킬이 아닌 경우 사용 + 애니메이션이 끊기지 않고, OnSkillEvent()가 호출 된 경우 사용)
+			Anime          = Define.Anime.Skill; // 실행
+				
+			// 즉시 행동 무브 패킷(현재 내 위치 포지션 스냅핑)
+			C_EntityMove movePacket = new C_EntityMove {
+				isInstantAction = true,
+				posX            = transform.position.x, 
+				posY            = transform.position.y, 
+				posZ            = transform.position.z
+			};
+			NetworkManager.Instance.Send(movePacket.Write());
+
+			// 쿨타임 시작: 데이터에서 쿨타임을 읽고 UI에 전달
+			try
+			{
+				string serial = infoState.serialNumber;
+				string atkKey = "S" + serial + "_" + currentSkillKey; // 예: S1_Q
+				AttackInfoData atkInfo = ClientManager.Data.AttackInfoDict[atkKey];
+				float cool = float.Parse(atkInfo.coolTime);
+				ClientManager.UI.gameSceneUI.StartSkillCooldown(currentSkillKey, cool);
+			}
+			catch (Exception e)
+			{
+				Debug.Log($"쿨타임 데이터 조회 실패: {e}");
+			}
 		}
 	}
 	

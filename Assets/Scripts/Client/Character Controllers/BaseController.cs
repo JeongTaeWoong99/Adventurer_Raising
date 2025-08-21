@@ -16,8 +16,11 @@ public abstract class BaseController : MonoBehaviour
 	
 	public bool isAnimeMove = false; // 공격 or 대쉬 같은 애니메이션 중, 이동 상태 체크
 	
-	public int maxAttackComboNum     = 0; // 어택 최대 수(-> CountAttackAnimations 메서드로 확인)
-	public int currentAttackComboNum = 1; // 현재 콤보
+	public int    maxAttackComboNum     = 0; // 어택 최대 수(-> CountAttackAnimations 메서드로 확인)
+	public int    currentAttackComboNum = 1; // 현재 콤보
+	
+	public string  currentSkillKey = "QWER";		// 스킬 키
+	public Vector3 skillCreatePos  = Vector3.zero;	// 스킬 생성 위치(고정된 위치 생성 스킬이 아닌 경우 사용)
 
 	private Vector3 gravityDirection = Vector3.zero; // 독립적인 중력 이동
 	
@@ -46,11 +49,9 @@ public abstract class BaseController : MonoBehaviour
 			switch (anime)
 			{
 				case Define.Anime.Idle: // 이어서 재생
-					//isAnimeMove = false;		
 					animator.CrossFade("IDLE", 0.1f, -1);
 					break;
 				case Define.Anime.Run:  // 이어서 재생
-					//isAnimeMove = false;	
 					animator.CrossFade("RUN", 0.1f, -1);
 					break;
 				case Define.Anime.Dash:   // 초기화 재생
@@ -63,15 +64,12 @@ public abstract class BaseController : MonoBehaviour
 					SoundCheckAndPlay();
 					break;
 				case Define.Anime.Skill: // 초기화 재생
-					//isAnimeMove = false;
-					animator.CrossFade("SKill" + 999, 0.1f, -1, 0f);
+					animator.CrossFade("SKILL" + currentSkillKey, 0.1f, -1, 0f);
 					break;
 				case Define.Anime.Hit: // 초기화 재생
-					//isAnimeMove = false;
 					animator.CrossFade("HIT", 0.1f, -1, 0f);
 					break;
 				case Define.Anime.Death: // 초기화 재생
-					//isAnimeMove = false;
 					animator.CrossFade("DEATH", 0.1f, -1, 0f);
 					break;
 			}

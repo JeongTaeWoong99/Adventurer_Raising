@@ -70,6 +70,9 @@ public class UI_State : UI_Base
     // 상태 업데이트 
     private void FixedUpdate()
     {
+        // 레벨 텍스트
+        levelText.text = infoState.Level.ToString();
+    
         // HP 비율 업데이트
         float ratio = infoState.Hp / (float)infoState.MaxHp;
         

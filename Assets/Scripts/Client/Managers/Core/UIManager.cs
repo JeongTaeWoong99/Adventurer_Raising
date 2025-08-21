@@ -23,8 +23,16 @@ public class UIManager
             return root;
 		}
     }
-	
-	// 켄버스 sort 설정에 사용
+
+    public void OnUpdate()
+    {
+	    if (gameSceneUI != null && gameSceneUI.gameObject.activeInHierarchy)
+	    {
+		    gameSceneUI.UpdateSkillCooldownUI(Time.deltaTime);
+	    }
+    }
+
+    // 켄버스 sort 설정에 사용
     public void SetCanvas(GameObject go, bool sort = true)
     {
         Canvas canvas = Util.GetOrAddComponent<Canvas>(go);

@@ -46,7 +46,7 @@ public class CommonPlayerController : BaseController
 		base.UpdateAttack();
 		
 		if(dir != Vector3.zero)
-			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);
+			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 40 * Time.deltaTime);
 		
 		if (!isAnimeMove || !characterController)
 			return;
@@ -56,6 +56,9 @@ public class CommonPlayerController : BaseController
 	protected override void UpdateSkill()
 	{
 		base.UpdateSkill();	
+		
+		if(dir != Vector3.zero)
+			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 40 * Time.deltaTime);
 	}
 	
 	protected override void UpdateHit()
@@ -63,7 +66,7 @@ public class CommonPlayerController : BaseController
 		base.UpdateHit();
 	
 		if(dir != Vector3.zero)	// 회전(이동 방향과 반대로 바라보기 -> 히트 위치를 바라보도록)
-			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(-dir), 40 * Time.deltaTime);
+			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(-dir), 20 * Time.deltaTime);
 	}
 	
 	protected override void UpdateDie()

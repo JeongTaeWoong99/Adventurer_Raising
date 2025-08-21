@@ -186,6 +186,21 @@ public class ManagementPP
                 {
                     player.playerInfoState.Level = p.currentLevel;
                     player.playerInfoState.SetStat(player.playerInfoState.Level);
+                    
+                    // 레벨업 이펙트
+                    // 히트 이펙트(E 이펙트 N 노말 A 어택 C 노멀)
+                    string levelUpEffect = "Prefabs/" + "EC000";
+                    GameObject original = ClientManager.Resource.R_Load<GameObject>(levelUpEffect);
+                    if (original)
+                    {
+                        Debug.Log("이팩트 존재");
+                        ClientManager.Resource.R_Instantiate("EC000",        null, player.transform.position + Vector3.up);                                      // 레벨업 이펙트
+                        ClientManager.Resource.R_Instantiate("Neon(Orange)", null, player.transform.position + Vector3.up * 4f, 0, "LEVEL UP");  // 레벨업 텍스트
+                    }
+                    else
+                    {
+                        Debug.Log("이팩트 없음");
+                    }
                 }
                 else if (p.currentLevel == 0)
                 {

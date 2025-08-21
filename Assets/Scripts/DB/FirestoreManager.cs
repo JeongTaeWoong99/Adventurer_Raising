@@ -26,8 +26,20 @@ public class CharacterInfoData
 	public string hitLength;
 }
 [Serializable]
+public class AttackInfoData
+{
+	public string attackSerial;
+	public string name;
+	public string coolTime;
+	public string image;
+}
+
+[Serializable]
 public class CharacterInfoList 
 { public List<CharacterInfoData> characterInfos; }
+[Serializable]
+public class AttackInfoList 
+{ public List<AttackInfoData> attackInfos; }
 #endregion
 
 public class FirestoreManager
@@ -44,6 +56,7 @@ public class FirestoreManager
 		var tasks = new List<Task>
 		{
 			LoadAndSaveCollectionToJson<CharacterInfoData, CharacterInfoList>("characterInfos", "CharacterInfoData.json"),
+			LoadAndSaveCollectionToJson<AttackInfoData,    AttackInfoList>   ("attackInfos",    "AttackInfoData.json"),
 		};
 		await Task.WhenAll(tasks);
 	}
