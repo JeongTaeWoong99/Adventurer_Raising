@@ -83,9 +83,13 @@ public class PlayerInfoState : InfoState
 		if (!gameObject.GetComponentInChildren<UI_State>())
 			ClientManager.UI.MakeWorldSpaceUI<UI_State>(transform);
 		
-		// 11시 스테이트 HUD 갱신
-		if(ClientManager.Game.MyPlayerGameObject == gameObject)
-			ClientManager.UI.gameSceneUI.OnStateChange(Hp,MaxHp,9999,9999, nickName);
+		// 내 캐릭터 전용 초기화(다른 플레이어 캐릭터는 작동 X)
+		if (ClientManager.Game.MyPlayerGameObject == gameObject)
+		{
+			ClientManager.UI.gameSceneUI.OnStateChange(Hp,MaxHp,9999,9999, level, nickName);  // 11시 스테이트 HUD 갱신
+			ClientManager.UI.gameSceneUI.SkillSetting();												// 6시 스킬창 세팅 초기화
+			ClientManager.UI.gameSceneUI.UpdateSkillUnlockByLevel(level);								// 레벨에 따른 스킬 잠금/해제
+		}
 	}
 
 	public override void OnAttacked(GameObject attacker,Vector3 attackCenterVec, int damage, string effectSerial)

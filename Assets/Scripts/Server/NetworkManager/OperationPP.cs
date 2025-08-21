@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 // 공통 packet processing
 public class OperationPP
@@ -345,5 +346,78 @@ public class OperationPP
 		
 		// 데이터 전달(지연 적용: 내부에서 바인딩 완료 시점과 결합하여 안전 적용)
 		chatClone.SetData(nickName, contents);
+	}
+	
+	// 스킬 그래픽 생성
+	public void SkillCreate(S_BroadcastEntitySkillCreate p)
+	{
+		Debug.Log("스킬 그래픽 생성");
+		int     attackerID   = p.ID;
+		int     entityType   = p.entityType;
+		string  attackSerial = p.attackSerial;	// 스킬 이펙트 시리얼
+		float   moveSpeed    = p .moveSpeed;
+		float   duration    = p.duration;
+
+		Debug.Log("p.skillCreatePos 스트링 => " + p.skillCreatePos);
+		Vector3 skillCreatePos = Extension.ParseVector3(p.skillCreatePos);
+		
+		if (entityType == (int)Define.Layer.Player)
+		{
+			// 공격자 찾기
+			if (NetworkManager.Management.playerDic.TryGetValue(attackerID, out var attackerPlayer))
+			{
+				// 공통 영역
+				// 히트 이펙트(E 이펙트 N 노말 A 어택)
+				// 프리팹 있는지 확인
+				string skillPrefabs = "Prefabs/" + attackSerial;
+				GameObject original = ClientManager.Resource.R_Load<GameObject>(skillPrefabs);
+				if (original)
+				{
+					Debug.Log("스킬 존재");
+					GameObject clone;
+					// 버트 이펙트는 엔티티를 부모로 생성(+ 로컬 포지션)
+					if (p.type == "Buff")
+						clone = ClientManager.Resource.R_Instantiate(attackSerial, attackerPlayer.transform);
+					// 나머지는 부모 없음(+ 월드 포지션)
+					else
+						clone = ClientManager.Resource.R_Instantiate(attackSerial, null, skillCreatePos);
+
+					// 이동 스크립트 부착: p.moveSpeed가 0이 아니면, 공격자 전방으로 이동
+					if (moveSpeed != 0f && clone != null)
+					{
+						var mover = clone.GetComponent<global::SkillMove>();
+						if (mover == null) mover = clone.AddComponent<global::SkillMove>();
+						mover.InitializeFromPacket(p, attackerPlayer != null ? attackerPlayer.transform : null);
+					}
+
+					// 정해진 시간에 삭제되야 하는 이펙트(참격 / 버프 등등) => duration이 끝나는 시간에 삭제
+					if (duration > 0)
+					{
+						// duration(ms) 경과 후 파괴
+						// 소수 초(예: 1.5s)를 쓰려면: 프로토콜의 duration을 float 초 단위로 바꾸고 PushDelayedSeconds 사용
+						ClientManager.Dispatcher.PushDelayedMilliseconds
+						(() =>
+						{
+							if (clone != null)
+								ClientManager.Resource.R_Destroy(clone);
+						}, duration * 1000);
+					}
+					// 정해진 시간이 없는 경우 => 시간이 넉넉하게 지난 후 삭제
+					else
+					{
+						ClientManager.Dispatcher.PushDelayedMilliseconds
+						(() =>
+						{
+							if (clone != null)
+								ClientManager.Resource.R_Destroy(clone);
+						}, 10 * 1000);
+					}
+				}
+				else
+				{
+					Debug.Log("스킬 없음");
+				}
+			}
+		}
 	}
 }

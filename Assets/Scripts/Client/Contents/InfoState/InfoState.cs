@@ -7,7 +7,7 @@
 public class InfoState : MonoBehaviour
 {
     [Header("공통 - 서버 리얼타임 데이터베이스를 통해 세팅")]
-    [SerializeField] protected string serialNumber; 
+    [SerializeField] public    string serialNumber; 
     [SerializeField] protected bool   live;         
     [SerializeField] protected bool   invincibility;
     [SerializeField] protected int    level;        
@@ -58,9 +58,10 @@ public class InfoState : MonoBehaviour
             
             // 내 캐릭터의 HP가 변경될 때 게임씬 UI 갱신 (MP는 임시 고정값 9999)
             if (ClientManager.Game.MyPlayerGameObject == gameObject && ClientManager.UI.gameSceneUI != null && maxHp > 0)
-                ClientManager.UI.gameSceneUI.OnStateChange(currentHp, maxHp, 9999, 9999);
+                ClientManager.UI.gameSceneUI.OnStateChange(currentHp, maxHp, 9999, 9999, level);
         }
     }
+    
     public int MaxHp
     {
         get => maxHp;
@@ -70,15 +71,17 @@ public class InfoState : MonoBehaviour
             // MaxHp 세팅 시에도 최신 HP/MaxHp를 반영하도록 UI 갱신
             if (ClientManager.Game.MyPlayerGameObject == gameObject && ClientManager.UI.gameSceneUI != null)
             {
-                ClientManager.UI.gameSceneUI.OnStateChange(currentHp, maxHp, 9999, 9999, nickName);
+                ClientManager.UI.gameSceneUI.OnStateChange(currentHp, maxHp, 9999, 9999, level, nickName);
             }
         }
     }
+    
     public Vector3 NormalAttackRange
     {
         get => normalAttackRange;
         set => normalAttackRange = value;
     }
+    
     public int NormalAttackDamage
     {
         get => normalAttackDamage;

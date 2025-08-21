@@ -64,7 +64,7 @@ public class ResourceManager
     }
 
 	// ★ 프리팹 인스턴스화 오버로드 (데미지 숫자 전달용)
-	public GameObject R_Instantiate(string path, Transform parent, Vector3 createPos, int settingNumber)
+	public GameObject R_Instantiate(string path, Transform parent, Vector3 createPos, int settingNumber = 0, string _text = null)
 	{
 		// 프리팹 로드
 		GameObject original = R_Load<GameObject>($"Prefabs/Number/{path}");
@@ -94,8 +94,24 @@ public class ResourceManager
 		// 리소스 후처리 (데미지 넘버는 인스턴스에서 설정)
 		var damageNumberMesh = go.GetComponent<DamageNumberMesh>();
 		if (damageNumberMesh)
-			damageNumberMesh.number = settingNumber;
-
+		{
+			if (settingNumber != 0)
+			{
+				damageNumberMesh.enableNumber = true;			// 숫자 사용
+				damageNumberMesh.number		  = settingNumber;	// 숫자 설정
+			}
+			else
+				damageNumberMesh.enableNumber = false; // 숫자 끄기
+			
+			if (_text != null)
+			{
+				damageNumberMesh.enableLeftText = true;
+				damageNumberMesh.leftText       = _text;
+			}
+			else
+				damageNumberMesh.enableLeftText = false;
+		}
+		
 		return go;
 	}
 

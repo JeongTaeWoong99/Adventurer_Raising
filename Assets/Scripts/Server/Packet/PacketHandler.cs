@@ -100,5 +100,12 @@ class PacketHandler
         S_BroadcastChatting pkt = packet as S_BroadcastChatting;
         ClientManager.Dispatcher.Push(() => { NetworkManager.Operation.Chatting(pkt); });
     }
+    
+    // 스킬 그래픽 생성 
+    public static void S_BroadcastEntitySkillCreateHandler(PacketSession session, IPacket packet)
+    {
+        S_BroadcastEntitySkillCreate pkt = packet as S_BroadcastEntitySkillCreate;
+        ClientManager.Dispatcher.Push(() => { NetworkManager.Operation.SkillCreate(pkt); });
+    }
     # endregion
 }

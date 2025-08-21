@@ -23,6 +23,7 @@ public class AnimationEventReceiver : MonoBehaviour
 		}
     }
     
+    // 노멀 공격
     public void OnHitEvent()
     {
 		// 공통 영역
@@ -52,19 +53,24 @@ public class AnimationEventReceiver : MonoBehaviour
 		    C_EntityMove movePacket = new C_EntityMove {isInstantAction = true, posX = transform.position.x, posY = transform.position.y, posZ = transform.position.z };
 		    NetworkManager.Instance.Send(movePacket.Write());
 			
-		    // 플레이어의 전방 위치 계산 (앞 + 위) => xyz와 회전y는 스킬에서도 사용될 듯. => 냠겨두기
-		    Vector3 attackCenter = transform.position + transform.forward * 0.5f + Vector3.up * 1f;
+			// 로테이션 스냅핑
+		    C_EntityRotation rotation = new C_EntityRotation { rotationY = transform.rotation.eulerAngles.y };
+		    NetworkManager.Instance.Send(rotation.Write());
+		    
 		    C_EntityAttackCheck attackCheck = new C_EntityAttackCheck {
-			    attackCenterX = attackCenter.x,
-			    attackCenterY = attackCenter.y,
-			    attackCenterZ = attackCenter.z,
-			    rotationY     = transform.rotation.eulerAngles.y,
-			    attackSerial  = "A" + _baseCon.playerInfoState.SerialNumber + "_" + _baseCon.currentAttackComboNum // AP000_1 또는 AP000_3
+			    createPosX = _baseCon.skillCreatePos.x,
+			    createPosY = _baseCon.skillCreatePos.y,
+			    createPosZ = _baseCon.skillCreatePos.z,
+			    attackSerial = "A" + _baseCon.playerInfoState.SerialNumber + "_" + _baseCon.currentAttackComboNum // AP000_1 또는 AP000_3
 		    };
 		    NetworkManager.Instance.Send(attackCheck.Write());
+		    
+		    Debug.Log("movePacket을 통한 내 위치 스냅핑 : " + transform.position.x + " / " + transform.position.y + " / " + transform.position.z);
+		    Debug.Log("C_EntityRotation을 통한 내 로테이션 스냅핑 : " + transform.rotation.eulerAngles.y);
 		}
     }
-
+	
+	// 노멀 공격 콤보 체크
     public void OnComboAttackCheck()
     {
 	    if (ClientManager.Game.MyPlayerGameObject == gameObject)
@@ -87,6 +93,52 @@ public class AnimationEventReceiver : MonoBehaviour
 				    _playerCon.NormalAttackRoutine(hit,_baseCon.currentAttackComboNum);
 			    }
 		    }
+	    }
+    }
+    
+    // 스킬 요청
+    public void OnSkillEvent()
+    {
+	    // 공통 영역
+	    // 히트 이펙트(E 이펙트 N 노말 A 어택)
+	    // 프리팹 있는지 확인
+	    // string normalAttackEffectPath = "Prefabs/" + "E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum;
+	    // GameObject original = ClientManager.Resource.R_Load<GameObject>(normalAttackEffectPath);
+	    // if (original)
+	    // {
+		   //  // Debug.Log("이팩트 존재");
+		   //  // x z 로테이션은 이펙트의 설정값 사용
+		   //  // y는 플레이어가 바라보는 방향 사용 
+		   //  Quaternion spawnRot = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * original.transform.rotation;
+		   //  ClientManager.Resource.R_Instantiate("E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum, null, transform.position + Vector3.up * 1.5f, spawnRot);
+	    // }
+	    // else
+	    // {
+		   //  //Debug.Log("이팩트 없음");
+	    // }
+	    
+	    
+		
+	    // 플레이어는 자신 클라에서 판단하고 보내줌...
+	    if (ClientManager.Game.MyPlayerGameObject == gameObject)
+	    {
+		    // 내 위치 서버 동기화(현재 내 위치 갱신 + 스냅핑을 통한, isAnimeMove == false 만들기)
+		    C_EntityMove movePacket = new C_EntityMove {isInstantAction = true, posX = transform.position.x, posY = transform.position.y, posZ = transform.position.z };
+		    NetworkManager.Instance.Send(movePacket.Write());
+		    
+		    // 로테이션 스냅핑
+		    C_EntityRotation rotation = new C_EntityRotation { rotationY = transform.rotation.eulerAngles.y };
+		    NetworkManager.Instance.Send(rotation.Write());
+		    
+		    // 스킬 그래픽 생성 요청(+ 그래픽도 생성에 맞춰서, 서버에서는 스킬 히트 체크가 진행됨) 
+		    C_EntitySkillCreate skillCreate = new C_EntitySkillCreate {
+				createPosX = _baseCon.skillCreatePos.x,
+				createPosY = _baseCon.skillCreatePos.y,
+				createPosZ = _baseCon.skillCreatePos.z,
+			    attackSerial = "S" + _baseCon.playerInfoState.SerialNumber + "_" + _baseCon.currentSkillKey // SP000_Q 또는 SP000_W
+		    };
+		    NetworkManager.Instance.Send(skillCreate.Write());
+		    Debug.Log(_baseCon.skillCreatePos.x + " / " + _baseCon.skillCreatePos.y + " / " + _baseCon.skillCreatePos.z);
 	    }
     }
 } 

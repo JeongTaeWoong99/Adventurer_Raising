@@ -16,13 +16,16 @@ public class DataManager
     // Key: serialNumber_level (예: "P000_1", "M001_1")
     // Value: CharacterInfoData (플레이어/몬스터/오브젝트 통합 정보)
     public Dictionary<string, CharacterInfoData> CharacterInfoDict { get; private set; } = new Dictionary<string, CharacterInfoData>();
+    public Dictionary<string, AttackInfoData>    AttackInfoDict    { get; private set; } = new Dictionary<string, AttackInfoData>();
     
     // DataManager 초기화 함수
     public void Init()
     {
         // JSON 파일에서 characterInfos 정보를 로드하여 Dictionary에 저장
-        var loader = LoadJson<Data.CharacterInfoStateData, string, CharacterInfoData>("CharacterInfoData.json");
-        CharacterInfoDict = loader.MakeDict();
+        var loaderCharacterInfoStateData = LoadJson<Data.CharacterInfoStateData, string, CharacterInfoData>("CharacterInfoData.json");
+        CharacterInfoDict = loaderCharacterInfoStateData.MakeDict();
+        var loaderAttackInfoStateData    = LoadJson<Data.AttackInfoStateData,    string, AttackInfoData>   ("AttackInfoData.json");
+        AttackInfoDict = loaderAttackInfoStateData.MakeDict();
     }
     
     // JSON 파일을 로드하여 지정된 타입으로 변환하는 함수

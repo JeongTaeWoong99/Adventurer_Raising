@@ -78,6 +78,7 @@ public class ClientManager : MonoBehaviour
     {
         // 코어
         _input.OnUpdate();
+        _ui.OnUpdate();
         
         // 컨텐츠
         _toolTip.OnUpdate();

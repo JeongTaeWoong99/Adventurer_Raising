@@ -17,4 +17,16 @@ namespace Data
 			return characterInfos.ToDictionary(info => $"{info.serialNumber}_{info.level}");
 		}
 	}
+	
+	[Serializable]
+	public class AttackInfoStateData : ILoader<string, AttackInfoData>
+	{
+		// JSON 파일에서 로드된 캐릭터 정보 리스트
+		public List<AttackInfoData> attackInfos = new List<AttackInfoData>();
+		// serialNumber + "_" + level 조합을 Key로 사용
+		public Dictionary<string, AttackInfoData> MakeDict()
+		{
+			return attackInfos.ToDictionary(info => $"{info.attackSerial}");
+		}
+	}
 }
