@@ -102,9 +102,9 @@ class PacketHandler
     }
     
     // 스킬 그래픽 생성 
-    public static void S_BroadcastEntitySkillCreateHandler(PacketSession session, IPacket packet)
+    public static void S_BroadcastEntityAttackEffectCreateHandler(PacketSession session, IPacket packet)
     {
-        S_BroadcastEntitySkillCreate pkt = packet as S_BroadcastEntitySkillCreate;
+        S_BroadcastEntityAttackEffectCreate pkt = packet as S_BroadcastEntityAttackEffectCreate;
         ClientManager.Dispatcher.Push(() => { NetworkManager.Operation.SkillCreate(pkt); });
     }
     # endregion

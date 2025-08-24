@@ -107,6 +107,6 @@ public class ClientManager : MonoBehaviour
         // 포커스가 있을 때: 144fps
         // 포커스가 없을 때: 30fps (멀티플레이어 테스트를 위해 완전히 멈추지 않음)
         Application.targetFrameRate = hasFocus ? 144 : 60;
-        Debug.Log("OnApplicationFocus => " + Application.targetFrameRate);
+        // Debug.Log("OnApplicationFocus => " + Application.targetFrameRate);
     }
 }

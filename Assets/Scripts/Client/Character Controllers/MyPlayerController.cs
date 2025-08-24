@@ -6,8 +6,9 @@ using UnityEngine;
 // BaseController -> CommonController/MonsterController -> MyPlayerController 
 public class MyPlayerController  : CommonPlayerController
 {
-	private const int MoveMask           = (1 << (int)Define.Layer.Ground);									 // Ground만 해당
-	private const int BlockAndObjectMask = (1 << (int)Define.Layer.Block) | (1 << (int)Define.Layer.Object); // Block + Object 해당
+	private const int MoveMask     = (1 << (int)Define.Layer.Ground);								     // 오른쪽 마우스를 눌렀을 때, 이동 반응 할 레이어(Ground)
+	private const int RunBlockMast = (1 << (int)Define.Layer.Block)  | (1 << (int)Define.Layer.Object);  // UpdateRun에서 이동 중, 마우스를 땠을 때, 멈출 레이어(Block + Object)
+	private const int AttackMask   = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster); // 일반 공격과 스킬 실행 가능 레이어(Ground + Monster)
 	
 	public bool isComboAttack = false;  // 콤보 어택 상태
 	
@@ -44,8 +45,8 @@ public class MyPlayerController  : CommonPlayerController
 		{
 			//Debug.Log("[MyPlayer] Idle 상태 진입 - 패킷 전송");
 			previousAnime = Define.Anime.Idle; // 현재 상태로 업데이트
-			
-			// 애니메이션 동기화
+
+			// // 애니메이션 동기화
 			C_EntityAnimation animPacket = new C_EntityAnimation { animationID = (int)Define.Anime.Idle };
 			NetworkManager.Instance.Send(animPacket.Write());
 			
@@ -67,10 +68,10 @@ public class MyPlayerController  : CommonPlayerController
 		// Run 상태 최초 진입 시만 동기화 (이전 상태와 다를 때만)
 		if (previousAnime != Define.Anime.Run)
 		{
-			//Debug.Log("[MyPlayer] Run 상태 진입 - 패킷 전송");
+			// //Debug.Log("[MyPlayer] Run 상태 진입 - 패킷 전송");
 			previousAnime = Define.Anime.Run; // 현재 상태로 업데이트
 		
-			// 애니메이션 동기화
+			// // 애니메이션 동기화
 			C_EntityAnimation animPacket = new C_EntityAnimation { animationID = (int)Define.Anime.Run };
 			NetworkManager.Instance.Send(animPacket.Write());
 		}
@@ -80,14 +81,14 @@ public class MyPlayerController  : CommonPlayerController
 		// 캐릭터 앞 1.0f 거리 내에 Block 레이어의 장애물이 있는지 검사
 		// 장애물이 있고, 마우스 오른쪽 버튼을 누르고 있으면    -> RUN 모션  + 이동 X
 		// 장애물이 있고, 마우스 오른쪽 버튼을 안 누르고 있으면 -> IDLE 모션 + 이동 X
-		if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1.0f, BlockAndObjectMask))
+		if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1.0f, RunBlockMast))
 		{
 			if (Input.GetMouseButton(1) == false)
 				Anime = Define.Anime.Idle;
 		}
 		
 		float distance = Vector3.Distance(movePos, transform.position);
-		if (distance < 0.2f)
+		if (distance < 0.25f)
 		{
 			Anime = Define.Anime.Idle;
 		}
@@ -158,6 +159,7 @@ public class MyPlayerController  : CommonPlayerController
 				break;
 		}
 	}
+	
 	private void OnMouseMove_IdleRun(Define.MouseEvent evt)
 	{
 		Ray     ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -200,15 +202,16 @@ public class MyPlayerController  : CommonPlayerController
 	private void OnMouseAttack_IdleRun(Define.MouseEvent evt)
 	{
 		 Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
-		 bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f);
+		 bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f, AttackMask);
 		
 		 if (raycastHit)
 		 {
 			 switch (evt)
 			 {
-				 case Define.MouseEvent.PointerDown:  // 1회 작동
-					 currentAttackComboNum = 1; // Idle Run에서 시작은 콤보 초기화
-					 NormalAttackRoutine(hit,currentAttackComboNum);
+				 // 콤보 처음 시작
+				 case Define.MouseEvent.PointerDown: // 1회 작동
+					 currentAttackComboNum = 1;						 // Idle Run에서 시작은 콤보 초기화
+					 NormalAttackRoutine(hit,currentAttackComboNum); 
 					 break;
 			 }
 		 }
@@ -216,16 +219,12 @@ public class MyPlayerController  : CommonPlayerController
 
 	private void OnMouseAttack_Attack(Define.MouseEvent evt)
 	{
-		Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
-		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f); 
-		if (raycastHit)
+		switch (evt)
 		{
-			switch (evt)
-			{
-				case Define.MouseEvent.PointerUp: // 1회 작동
-					isComboAttack = false; 
-					break;
-			}
+			// 콤보 끔내기
+			case Define.MouseEvent.PointerUp: // 1회 작동
+				isComboAttack = false;
+				break;
 		}
 	}
 
@@ -267,17 +266,15 @@ public class MyPlayerController  : CommonPlayerController
 		
 		// 마우스 위치를 이동 방향으로 설정
 		Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
-		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f);
+		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f, AttackMask);
 		
-		// dir   = movePos - transform.position;	
-		// dir.y = 0;
 		if (raycastHit)
 		{ 
 			// 내 클라 변경
 			dir   = hit.point - transform.position; // 1회 설정
 			dir.y = 0;
-			Anime = Define.Anime.Dash;			    // 실행
-				
+			Anime = Define.Anime.Dash;				// 실행
+			
 			// 즉시 행동 무브 패킷(현재 내 위치 포지션 스냅핑)
 			C_EntityMove movePacket = new C_EntityMove {
 				isInstantAction = true,
@@ -306,16 +303,10 @@ public class MyPlayerController  : CommonPlayerController
 		
 		// 마우스 위치를 스킬 방향(+위치)으로 설정
 		Ray  ray        = Camera.main.ScreenPointToRay(Input.mousePosition);
-		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f);
+		bool raycastHit = Physics.Raycast(ray, out var hit, 100.0f, AttackMask);
 		
-		// dir   = movePos - transform.position;	
-		// dir.y = 0;
 		if (raycastHit)
 		{
-			// 내 클라 바라보는 방향 변경
-			dir   = hit.point - transform.position; // 1회 설정
-			dir.y = 0;
-			
 			// 어떤 스킬 키(Q/W/E/R)를 눌렀는지 기록
 			if      (Input.GetKeyDown(KeyCode.Q)) currentSkillKey = "Q";
 			else if (Input.GetKeyDown(KeyCode.W)) currentSkillKey = "W";
@@ -330,32 +321,41 @@ public class MyPlayerController  : CommonPlayerController
 			// 쿨타임 중이면 사용 불가
 			if (ClientManager.UI.gameSceneUI != null && ClientManager.UI.gameSceneUI.IsSkillOnCooldown(currentSkillKey))
 				return;
-
-			skillCreatePos = hit.point;			 // 스킬 생성 위치(고정된 위치 생성 스킬이 아닌 경우 사용 + 애니메이션이 끊기지 않고, OnSkillEvent()가 호출 된 경우 사용)
-			Anime          = Define.Anime.Skill; // 실행
-				
-			// 즉시 행동 무브 패킷(현재 내 위치 포지션 스냅핑)
-			C_EntityMove movePacket = new C_EntityMove {
-				isInstantAction = true,
-				posX            = transform.position.x, 
-				posY            = transform.position.y, 
-				posZ            = transform.position.z
-			};
-			NetworkManager.Instance.Send(movePacket.Write());
-
+			
 			// 쿨타임 시작: 데이터에서 쿨타임을 읽고 UI에 전달
 			try
 			{
-				string serial = infoState.serialNumber;
-				string atkKey = "S" + serial + "_" + currentSkillKey; // 예: S1_Q
+				string serial 		   = infoState.serialNumber;
+				string atkKey 		   = "A_" + serial + "_" + currentSkillKey;
 				AttackInfoData atkInfo = ClientManager.Data.AttackInfoDict[atkKey];
-				float cool = float.Parse(atkInfo.coolTime);
+				float cool			   = float.Parse(atkInfo.coolTime);
 				ClientManager.UI.gameSceneUI.StartSkillCooldown(currentSkillKey, cool);
 			}
 			catch (Exception e)
 			{
 				Debug.Log($"쿨타임 데이터 조회 실패: {e}");
 			}
+			
+			// 내 클라 바라보는 방향 변경
+			dir   		   = hit.point - transform.position; // 1회 설정
+			dir.y 		   = 0;
+			skillCreatePos = hit.point;			 			 // 스킬 생성 위치(고정된 위치 생성 스킬이 아닌 경우 사용 + 애니메이션이 끊기지 않고, OnSkillEvent()가 호출 된 경우 사용)
+			Anime          = Define.Anime.Skill; 			 // 실행
+	
+			// 즉시 행동 무브 패킷(현재 내 위치 포지션 스냅핑)
+			C_EntityMove movePacket = new C_EntityMove {isInstantAction = true, posX = transform.position.x, posY = transform.position.y, posZ = transform.position.z };
+			NetworkManager.Instance.Send(movePacket.Write());
+			
+			// 공격 애니메이션 패킷(스킬도 C_EntityAttackAnimation 같이 사용... attackAnimeNumID에 10 20 30 40을 넣어서, Q W E R 구분)
+			int skillAttackAnimeNumID = 0; // 10 = Q, 20 = W, 30 = E, 40 = R
+			if		(currentSkillKey == "Q") skillAttackAnimeNumID = 10;
+			else if (currentSkillKey == "W") skillAttackAnimeNumID = 20;
+			else if (currentSkillKey == "E") skillAttackAnimeNumID = 30;
+			else if (currentSkillKey == "R") skillAttackAnimeNumID = 40;
+			
+			C_EntityAttackAnimation attackAnimationPacket = new C_EntityAttackAnimation { animationID = (int)Define.Anime.Attack, attackAnimeNumID = skillAttackAnimeNumID, 
+																						  dirX = dir.x, dirY = dir.y, dirZ = dir.z };
+			NetworkManager.Instance.Send(attackAnimationPacket.Write());
 		}
 	}
 	
@@ -363,15 +363,13 @@ public class MyPlayerController  : CommonPlayerController
 	private void HandleChatInput()
 	{
 		var chatField = ClientManager.UI.gameSceneUI.ChatInputField;
-		// 🔧 EventSystem 기준으로 포커스 상태 확인 (더 정확함)
-		bool isChatFocused = UnityEngine.EventSystems.EventSystem.current?.currentSelectedGameObject == chatField.gameObject;
+		bool isChatFocused = UnityEngine.EventSystems.EventSystem.current?.currentSelectedGameObject == chatField.gameObject; // 🔧 EventSystem 기준으로 포커스 상태 확인 (더 정확함)
 		
 		// 채팅창 포커스가 아닐 때, Enter => 채팅창 포커스 On 시키기
 		if (!isChatFocused)
 		{
-			//Debug.Log("채팅창 포커스 off => on");
 			chatField.ActivateInputField(); // 채팅창 포커스 On
-			return;						    // ✅ 핵심! 포커스 활성화 후 즉시 리턴
+			return;						    // 포커스 활성화 후 즉시 리턴!
 		}
 		
 		// 채팅창 포커스일 때, Enter => 채팅 전송 
@@ -385,15 +383,12 @@ public class MyPlayerController  : CommonPlayerController
 				};
 				NetworkManager.Instance.Send(chat.Write());
 				
-				//Debug.Log($"메시지 전송: {chatField.text}");
-				
 				chatField.text = "";			  // 비우기
 				chatField.DeactivateInputField(); // 포커스 해제
 			}
 			// 텍스트가 없음
 			else
 			{
-				//Debug.Log("텍스트 입력창이 비어 있습니다. 포커스를 해제합니다.");
 				chatField.DeactivateInputField(); // 포커스 해제
 			}
 		}
@@ -403,7 +398,7 @@ public class MyPlayerController  : CommonPlayerController
 	{
 		while (true)
 		{
-			yield return new WaitForSeconds(0.05f);
+			yield return new WaitForSeconds(0.1f);
 			
 			try
 			{
@@ -429,10 +424,10 @@ public class MyPlayerController  : CommonPlayerController
 	public void NormalAttackRoutine(RaycastHit hit, int comboNum)
 	{
 		// 이동 방향 계산(애니메이션 전환 시, 1회 갱신)
-		// 내 캐릭터 movePos   -> 마우스 제어	  -> moveDirection 결정
+		// 내 캐릭터 movePos   -> 마우스 제어	   -> moveDirection 결정
 		// 다른 캐릭터 movePos -> 패킷으로 받아옴 -> moveDirection 결정
 		isComboAttack         = true;
-		currentAttackComboNum = comboNum;            // 1
+		currentAttackComboNum = comboNum;           
 		dir                   = hit.point - transform.position;
 		dir.y                 = 0;
 		Anime                 = Define.Anime.Attack;
@@ -441,9 +436,9 @@ public class MyPlayerController  : CommonPlayerController
 	    C_EntityMove movePacket = new C_EntityMove {isInstantAction = true, posX = transform.position.x, posY = transform.position.y, posZ = transform.position.z };
 	    NetworkManager.Instance.Send(movePacket.Write());
     	
-		// 공격 패킷
+		// 공격 애니메이션 패킷
 		C_EntityAttackAnimation attackAnimationPacket = new C_EntityAttackAnimation { animationID = (int)Define.Anime.Attack, attackAnimeNumID = comboNum, 
 																					  dirX = dir.x, dirY = dir.y, dirZ = dir.z };
-		NetworkManager.Instance.Send(attackAnimationPacket.Write()); // 자동 애니 확정
+		NetworkManager.Instance.Send(attackAnimationPacket.Write());
 	}
 }

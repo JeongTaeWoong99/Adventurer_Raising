@@ -64,7 +64,7 @@ public abstract class BaseController : MonoBehaviour
 					SoundCheckAndPlay();
 					break;
 				case Define.Anime.Skill: // 초기화 재생
-					animator.CrossFade("SKILL" + currentSkillKey, 0.1f, -1, 0f);
+					animator.CrossFade("SKILL" + currentSkillKey,		  0.1f, -1, 0f);
 					break;
 				case Define.Anime.Hit: // 초기화 재생
 					animator.CrossFade("HIT", 0.1f, -1, 0f);

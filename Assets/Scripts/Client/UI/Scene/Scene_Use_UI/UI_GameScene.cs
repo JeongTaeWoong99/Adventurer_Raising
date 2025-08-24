@@ -151,25 +151,25 @@ public class UI_GameScene : UI_Scene
         // 스킬 세팅(Q W E R)
         var attackDict = ClientManager.Data.AttackInfoDict;
         // Q
-        string ui_imageKeyQ = "S" + serialNumber + "_Q";
+        string ui_imageKeyQ = "A_" + serialNumber + "_Q";
         AttackInfoData attackInfoQ = attackDict[ui_imageKeyQ];
         ClientManager.UI.gameSceneUI.SkillQ_Image.sprite   = ClientManager.Resource.R_Load<Sprite>("UI/" + attackInfoQ.image);
         ClientManager.UI.gameSceneUI.HideQImage.fillAmount = 0f;
         
         // W
-        string ui_imageKeyW = "S" + serialNumber + "_W";
+        string ui_imageKeyW = "A_" + serialNumber + "_W";
         AttackInfoData attackInfoW = attackDict[ui_imageKeyW];
         ClientManager.UI.gameSceneUI.SkillW_Image.sprite   = ClientManager.Resource.R_Load<Sprite>("UI/" + attackInfoW.image);
         ClientManager.UI.gameSceneUI.HideWImage.fillAmount = 0f;
         
         // E
-        string ui_imageKeyE = "S" + serialNumber + "_E";
+        string ui_imageKeyE = "A_" + serialNumber + "_E";
         AttackInfoData attackInfoE = attackDict[ui_imageKeyE];
         ClientManager.UI.gameSceneUI.SkillE_Image.sprite   = ClientManager.Resource.R_Load<Sprite>("UI/" + attackInfoE.image);
         ClientManager.UI.gameSceneUI.HideEImage.fillAmount = 0f;
         
         // R
-        string ui_imageKeyR = "S" + serialNumber + "_R";
+        string ui_imageKeyR = "A_" + serialNumber + "_R";
         AttackInfoData attackInfoR = attackDict[ui_imageKeyR];
         ClientManager.UI.gameSceneUI.SkillR_Image.sprite   = ClientManager.Resource.R_Load<Sprite>("UI/" + attackInfoR.image);
         ClientManager.UI.gameSceneUI.HideRImage.fillAmount = 0f;
