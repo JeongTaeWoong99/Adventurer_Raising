@@ -16,33 +16,46 @@ public class AnimationEventReceiver : MonoBehaviour
     
     public void ReturnToIdle()
     {
+        // 대시 완료 시 잠깐 dir을 고정하여 다음 프레임에서 올바른 방향으로 설정되도록 함
+        if (_baseCon.Anime == Define.Anime.Dash)
+        {
+            StartCoroutine(DelayedDirReset());
+        }
+        else
+        {
+            _baseCon.dir = Vector3.zero;
+        }
+        
 		if (ClientManager.Game.MyPlayerGameObject == gameObject)
 		{
-			_baseCon.isAnimeMove = false;				// 본인은 isAnimeMove로 바로 멈추고
-			_baseCon.Anime       = Define.Anime.Idle;	// 다른 클라의 본인은 Define.Anime.Idle 상태를 보내서, EntityAnimation에서 isAnimeMove를 FALSE로 만들기.
+		    _baseCon.isAnimeMove = false;			  // 본인은 isAnimeMove로 바로 멈추고
+		    _baseCon.Anime       = Define.Anime.Idle; // 다른 클라의 본인은 Define.Anime.Idle 상태를 보내서, EntityAnimation에서 isAnimeMove를 FALSE로 만들기.
 		}
     }
     
-    // 노멀 공격
+    // 대시 완료 후 잠깐 지연하여 dir 리셋
+    private System.Collections.IEnumerator DelayedDirReset()
+    {
+        yield return new WaitForFixedUpdate(); // 1 Physics Frame 대기
+        _baseCon.dir = Vector3.zero;
+    }
+    
+    // 공격 이벤트(일반 공격)
     public void OnHitEvent()
     {
-		// 공통 영역
-		// 히트 이펙트(E 이펙트 N 노말 A 어택)
-		// 프리팹 있는지 확인
-		string normalAttackEffectPath = "Prefabs/" + "E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum;
-		GameObject original = ClientManager.Resource.R_Load<GameObject>(normalAttackEffectPath);
+		// 클라 일반 공격 이펙트
+		// 클라쪽에서 애니메이션에 맞춰서, 재생하는 이펙트(해당 이펙트가 나오는 것과 서버에서 유효타가 되는 것은 상관 없음...)
+		string clientMakeEffect = "Prefabs/" + "E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum;
+		GameObject original = ClientManager.Resource.R_Load<GameObject>(clientMakeEffect);
 		if (original)
 		{
 			// Debug.Log("이팩트 존재");
-			// x z 로테이션은 이펙트의 설정값 사용
-			// y는 플레이어가 바라보는 방향 사용 
+			// x z 로테이션은 이펙트의 설정값 사용(y는 플레이어가 바라보는 방향 사용 )
 			Quaternion spawnRot = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * original.transform.rotation;
 			ClientManager.Resource.R_Instantiate("E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum, null, transform.position + Vector3.up * 1.5f, spawnRot);
 		}
 		else
-		{
-			//Debug.Log("이팩트 없음");
-		}
+			Debug.Log("이팩트 없음");
 		
 	    // 플레이어는 자신 클라에서 판단하고 보내줌...
 	    if (ClientManager.Game.MyPlayerGameObject == gameObject)
@@ -57,17 +70,46 @@ public class AnimationEventReceiver : MonoBehaviour
 		    C_EntityRotation rotation = new C_EntityRotation { rotationY = transform.rotation.eulerAngles.y };
 		    NetworkManager.Instance.Send(rotation.Write());
 		    
-		    C_EntityAttackCheck attackCheck = new C_EntityAttackCheck {
-			    createPosX = _baseCon.skillCreatePos.x,
-			    createPosY = _baseCon.skillCreatePos.y,
-			    createPosZ = _baseCon.skillCreatePos.z,
-			    attackSerial = "A" + _baseCon.playerInfoState.SerialNumber + "_" + _baseCon.currentAttackComboNum // AP000_1 또는 AP000_3
+		    // 공격 요청
+		    C_EntityAttack attackCheck = new C_EntityAttack {
+			    createPosX   = _baseCon.skillCreatePos.x,
+			    createPosY   = _baseCon.skillCreatePos.y,
+			    createPosZ   = _baseCon.skillCreatePos.z,
+			    attackSerial = "A_" + _baseCon.playerInfoState.SerialNumber + "_" + _baseCon.currentAttackComboNum // A_P000_1 또는 A_P000_2 또는 A_P000_3
 		    };
 		    NetworkManager.Instance.Send(attackCheck.Write());
-		    
-		    Debug.Log("movePacket을 통한 내 위치 스냅핑 : " + transform.position.x + " / " + transform.position.y + " / " + transform.position.z);
-		    Debug.Log("C_EntityRotation을 통한 내 로테이션 스냅핑 : " + transform.rotation.eulerAngles.y);
 		}
+    }
+    
+    // 공격 이벤트(스킬 공격)
+    public void OnSkillHitEvent()
+    {
+	    // 클라 스킬 공격 이펙트
+	    // 클라쪽에서 애니메이션에 맞춰서, 재생하는 이펙트(해당 이펙트가 나오는 것과 서버에서 유효타가 되는 것은 상관 없음...)
+	    // ~~~~~~~
+		
+	    // 플레이어는 자신 클라에서 판단하고 보내줌...
+	    if (ClientManager.Game.MyPlayerGameObject == gameObject)
+	    {
+		    _baseCon.isAnimeMove = false;
+			
+		    // 내 위치 서버 동기화(현재 내 위치 갱신 + 스냅핑을 통한, isAnimeMove == false 만들기)
+		    C_EntityMove movePacket = new C_EntityMove {isInstantAction = true, posX = transform.position.x, posY = transform.position.y, posZ = transform.position.z };
+		    NetworkManager.Instance.Send(movePacket.Write());
+			
+		    // 로테이션 스냅핑
+		    C_EntityRotation rotation = new C_EntityRotation { rotationY = transform.rotation.eulerAngles.y };
+		    NetworkManager.Instance.Send(rotation.Write());
+		    
+		    // 공격 요청
+		    C_EntityAttack attackCheck = new C_EntityAttack {
+			    createPosX   = _baseCon.skillCreatePos.x,
+			    createPosY   = _baseCon.skillCreatePos.y,
+			    createPosZ   = _baseCon.skillCreatePos.z,
+			    attackSerial = "A_" + _baseCon.playerInfoState.SerialNumber + "_" + _baseCon.currentSkillKey // A_P000_Q 또는 A_P000_W
+		    };
+		    NetworkManager.Instance.Send(attackCheck.Write());
+	    }
     }
 	
 	// 노멀 공격 콤보 체크
@@ -94,51 +136,11 @@ public class AnimationEventReceiver : MonoBehaviour
 			    }
 		    }
 	    }
-    }
-    
-    // 스킬 요청
-    public void OnSkillEvent()
-    {
-	    // 공통 영역
-	    // 히트 이펙트(E 이펙트 N 노말 A 어택)
-	    // 프리팹 있는지 확인
-	    // string normalAttackEffectPath = "Prefabs/" + "E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum;
-	    // GameObject original = ClientManager.Resource.R_Load<GameObject>(normalAttackEffectPath);
-	    // if (original)
-	    // {
-		   //  // Debug.Log("이팩트 존재");
-		   //  // x z 로테이션은 이펙트의 설정값 사용
-		   //  // y는 플레이어가 바라보는 방향 사용 
-		   //  Quaternion spawnRot = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * original.transform.rotation;
-		   //  ClientManager.Resource.R_Instantiate("E" + _baseCon.infoState.SerialNumber + "NA" + _baseCon.currentAttackComboNum, null, transform.position + Vector3.up * 1.5f, spawnRot);
-	    // }
-	    // else
-	    // {
-		   //  //Debug.Log("이팩트 없음");
-	    // }
-	    
-	    
-		
-	    // 플레이어는 자신 클라에서 판단하고 보내줌...
-	    if (ClientManager.Game.MyPlayerGameObject == gameObject)
-	    {
-		    // 내 위치 서버 동기화(현재 내 위치 갱신 + 스냅핑을 통한, isAnimeMove == false 만들기)
-		    C_EntityMove movePacket = new C_EntityMove {isInstantAction = true, posX = transform.position.x, posY = transform.position.y, posZ = transform.position.z };
-		    NetworkManager.Instance.Send(movePacket.Write());
-		    
-		    // 로테이션 스냅핑
-		    C_EntityRotation rotation = new C_EntityRotation { rotationY = transform.rotation.eulerAngles.y };
-		    NetworkManager.Instance.Send(rotation.Write());
-		    
-		    // 스킬 그래픽 생성 요청(+ 그래픽도 생성에 맞춰서, 서버에서는 스킬 히트 체크가 진행됨) 
-		    C_EntitySkillCreate skillCreate = new C_EntitySkillCreate {
-				createPosX = _baseCon.skillCreatePos.x,
-				createPosY = _baseCon.skillCreatePos.y,
-				createPosZ = _baseCon.skillCreatePos.z,
-			    attackSerial = "S" + _baseCon.playerInfoState.SerialNumber + "_" + _baseCon.currentSkillKey // SP000_Q 또는 SP000_W
-		    };
-		    NetworkManager.Instance.Send(skillCreate.Write());
-		    Debug.Log(_baseCon.skillCreatePos.x + " / " + _baseCon.skillCreatePos.y + " / " + _baseCon.skillCreatePos.z);
-	    }
-    }
 } 
+
+	// 대쉬 값 초기화
+	public void ResetDash()
+	{
+		_baseCon.movePos = _baseCon.transform.position;
+	}
+}

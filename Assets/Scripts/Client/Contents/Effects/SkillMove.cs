@@ -6,7 +6,7 @@ public class SkillMove : MonoBehaviour
 	[SerializeField] private float _speed = 0f;
 	private Vector3 _direction;
 
-	public void InitializeFromPacket(S_BroadcastEntitySkillCreate p, Transform attacker)
+	public void InitializeFromPacket(S_BroadcastEntityAttackEffectCreate p, Transform attacker)
 	{
 		if (p == null) return;
 		_speed = p.moveSpeed;
@@ -14,7 +14,7 @@ public class SkillMove : MonoBehaviour
 	}
 
 	// 오버로드: 공격자 트랜스폼을 넘기지 않는 경우, 현재 forward 사용
-	public void InitializeFromPacket(S_BroadcastEntitySkillCreate p)
+	public void InitializeFromPacket(S_BroadcastEntityAttackEffectCreate p)
 	{
 		if (p == null) return;
 		_speed = p.moveSpeed;
@@ -26,7 +26,7 @@ public class SkillMove : MonoBehaviour
 		if (_speed == 0f)
 			return;
 
-		transform.position += _direction * _speed * Time.deltaTime;
+		transform.position += _direction * (_speed * Time.deltaTime);
 	}
 }
 

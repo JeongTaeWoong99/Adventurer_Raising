@@ -32,7 +32,6 @@ public class OperationPP
 					if (p.isInstantAction)
 					{
 						player.isAnimeMove                 = false;									
-						
 						player.characterController.enabled = false;									// CharacterController 일시 비활성화
 						player.transform.position          = new Vector3(p.posX, p.posY, p.posZ);   // 절대 위치 설정
 						player.characterController.enabled = true;									// CharacterController 재활성화
@@ -42,7 +41,7 @@ public class OperationPP
 					{
 						// 다른 플레이어 캐릭터는 '최신 위치' - '클라 위치'로 방향을 구함...
 						player.dir   = new Vector3(p.posX, p.posY, p.posZ) - player.transform.position;
-						player.dir.y = 0f;	
+						player.dir.y = 0f;
 					}
 				}
 			}
@@ -161,6 +160,20 @@ public class OperationPP
 	// 엔티티 공격 애니메이션 
 	public void EntityAttackAnimation(S_BroadcastEntityAttackAnimation p)
 	{
+		// p.attackAnimeNumID에 따라, 공격 or 스킬 애니메이션 결정...
+		Define.Anime selectAnime;
+		string       skillKey = "";
+		if (p.attackAnimeNumID == 10 || p.attackAnimeNumID == 20 || p.attackAnimeNumID == 30 || p.attackAnimeNumID == 40)
+		{
+			selectAnime = Define.Anime.Skill;
+			if      (p.attackAnimeNumID == 10) skillKey = "Q";
+			else if (p.attackAnimeNumID == 20) skillKey = "W";
+			else if (p.attackAnimeNumID == 30) skillKey = "E";
+			else if (p.attackAnimeNumID == 40) skillKey = "R";
+		}
+		else 
+			selectAnime = Define.Anime.Attack;
+		
 		// 플레이어 공격 애니메이션
 		if (p.entityType == (int)Define.Layer.Player)
 		{
@@ -170,9 +183,17 @@ public class OperationPP
 			{
 				if (NetworkManager.Management.playerDic.TryGetValue(p.ID, out var player))
 			    {
-			        player.dir                   = new Vector3(p.dirX, p.dirY, p.dirZ); // 공격 이동 방향
-			        player.currentAttackComboNum = p.attackAnimeNumID;                  // 콤보 번호
-			        player.Anime                 = Define.Anime.Attack;                 // 공격 애니메이션 재생(자동)
+			        player.dir = new Vector3(p.dirX, p.dirY, p.dirZ); // 공격 이동 방향
+			        if (selectAnime == Define.Anime.Attack)
+			        {
+						player.currentAttackComboNum = p.attackAnimeNumID; // 콤보 번호 1 2 3
+						player.Anime                 = selectAnime;							
+			        }
+			        else  if (selectAnime == Define.Anime.Skill)
+			        {
+				        player.currentSkillKey = skillKey;		// 스킬 스트링 Q W E R 
+				        player.Anime           = selectAnime;
+			        }
 			    }
 			}
 		}
@@ -182,8 +203,16 @@ public class OperationPP
 			if (NetworkManager.Management.objectDic.TryGetValue(p.ID, out var _object))
 			{
 				_object.dir                   = new Vector3(p.dirX, p.dirY, p.dirZ); // 공격 이동 방향
-				_object.currentAttackComboNum = p.attackAnimeNumID;                  // 콤보 번호
-				_object.Anime                 = Define.Anime.Attack;                 // 공격 애니메이션 재생(자동)
+				if (selectAnime == Define.Anime.Attack)
+				{
+					_object.currentAttackComboNum = p.attackAnimeNumID; // 콤보 번호 1 2 3
+					_object.Anime                 = selectAnime;							
+				}
+				else  if (selectAnime == Define.Anime.Skill)
+				{
+					_object.currentSkillKey = skillKey;		// 스킬 스트링 Q W E R 
+					_object.Anime           = selectAnime;
+				}
 			}
 		}
 		// 몬스터 공격 애니메이션
@@ -192,8 +221,16 @@ public class OperationPP
 			if (NetworkManager.Management.monsterDic.TryGetValue(p.ID, out var monster))
 			{
 				monster.dir                   = new Vector3(p.dirX, p.dirY, p.dirZ); // 공격 이동 방향
-				monster.currentAttackComboNum = p.attackAnimeNumID;                  // 콤보 번호
-				monster.Anime                 = Define.Anime.Attack;                 // 공격 애니메이션 재생(자동)
+				if (selectAnime == Define.Anime.Attack)
+				{
+					monster.currentAttackComboNum = p.attackAnimeNumID; // 콤보 번호 1 2 3
+					monster.Anime                 = selectAnime;							
+				}
+				else  if (selectAnime == Define.Anime.Skill)
+				{
+					monster.currentSkillKey = skillKey;		// 스킬 스트링 Q W E R 
+					monster.Anime           = selectAnime;
+				}
 			}
 		}
 	}
@@ -203,7 +240,7 @@ public class OperationPP
 	{	
 		int     attackerID   = p.attackerID;
 		int     damage       = p.damage;
-		string  effectSerial = p.effectSerial;
+		string  effectSerial = p.hitEffectSerial;
 		
 		// 모든 결과 확인
 		if (p.attackerEntityType == (int)Define.Layer.Player)
@@ -349,17 +386,17 @@ public class OperationPP
 	}
 	
 	// 스킬 그래픽 생성
-	public void SkillCreate(S_BroadcastEntitySkillCreate p)
+	public void SkillCreate(S_BroadcastEntityAttackEffectCreate p)
 	{
 		Debug.Log("스킬 그래픽 생성");
 		int     attackerID   = p.ID;
 		int     entityType   = p.entityType;
-		string  attackSerial = p.attackSerial;	// 스킬 이펙트 시리얼
+		string  attackSerial = p.attackEffectSerial;	// 스킬 이펙트 시리얼
 		float   moveSpeed    = p .moveSpeed;
-		float   duration    = p.duration;
+		float   duration     = p.duration;
 
-		Debug.Log("p.skillCreatePos 스트링 => " + p.skillCreatePos);
-		Vector3 skillCreatePos = Extension.ParseVector3(p.skillCreatePos);
+		Debug.Log("p.skillCreatePos 스트링 => " + p.attackEffectCreatePos);
+		Vector3 skillCreatePos = Extension.ParseVector3(p.attackEffectCreatePos);
 		
 		if (entityType == (int)Define.Layer.Player)
 		{
@@ -415,7 +452,7 @@ public class OperationPP
 				}
 				else
 				{
-					Debug.Log("스킬 없음");
+					Debug.Log(skillPrefabs + " => 스킬 없음");
 				}
 			}
 		}
