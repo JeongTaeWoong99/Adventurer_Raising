@@ -16,28 +16,16 @@ public class AnimationEventReceiver : MonoBehaviour
     
     public void ReturnToIdle()
     {
-        // 대시 완료 시 잠깐 dir을 고정하여 다음 프레임에서 올바른 방향으로 설정되도록 함
-        if (_baseCon.Anime == Define.Anime.Dash)
-        {
-            StartCoroutine(DelayedDirReset());
-        }
-        else
-        {
-            _baseCon.dir = Vector3.zero;
-        }
+        _baseCon.dir     = Vector3.zero;
+        Vector3 resetPos = _baseCon.transform.position;
+        resetPos.y       = 0;
+        _baseCon.movePos = resetPos;
         
 		if (ClientManager.Game.MyPlayerGameObject == gameObject)
 		{
 		    _baseCon.isAnimeMove = false;			  // 본인은 isAnimeMove로 바로 멈추고
 		    _baseCon.Anime       = Define.Anime.Idle; // 다른 클라의 본인은 Define.Anime.Idle 상태를 보내서, EntityAnimation에서 isAnimeMove를 FALSE로 만들기.
 		}
-    }
-    
-    // 대시 완료 후 잠깐 지연하여 dir 리셋
-    private System.Collections.IEnumerator DelayedDirReset()
-    {
-        yield return new WaitForFixedUpdate(); // 1 Physics Frame 대기
-        _baseCon.dir = Vector3.zero;
     }
     
     // 공격 이벤트(일반 공격)
