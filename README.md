@@ -20,7 +20,7 @@
 
 ## 인게임 사진
 <p align="center">
-  <img width="1056" height="579" alt="스크린샷 2025-09-14 204755" src="https://github.com/user-attachments/assets/49372a5e-1b98-4a70-a28d-34bbe83c4a65" />
+  <img width="800" height="579" alt="스크린샷 2025-09-14 204755" src="https://github.com/user-attachments/assets/49372a5e-1b98-4a70-a28d-34bbe83c4a65" />
 </p>
 
 ## 관련 링크
