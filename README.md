@@ -17,7 +17,7 @@
 
 ## 시스템 구조도
 <p align="center">
-  <img width="1056" height="579" alt="스크린샷 2025-09-14 204801" src="https://github.com/user-attachments/assets/e6fa9956-b11c-41a7-bb05-9868b27638c4" />
+  <img width="1056" height="501" alt="image" src="https://github.com/user-attachments/assets/717bd5d7-3ba2-43a3-a8f7-1881c426f9b8" />
 </p>
 
 ## 인게임 사진
