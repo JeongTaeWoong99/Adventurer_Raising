@@ -28,5 +28,5 @@
 ## 관련 링크
 <table>
   <tr><td>시연 영상</td><td><a href="https://www.youtube.com/watch?v=bL4QaUiaqw4&feature=youtu.be">바로가기</a></td></tr>
+  <tr><td>서버 GitHub</td><td><a href="https://github.com/JeongTaeWoong99/3D_RPG_Server">바로가기</a></td></tr>
 </table>
- 
