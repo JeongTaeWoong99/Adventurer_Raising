@@ -164,7 +164,7 @@ Assets/Scripts/
 | 시연 영상 | [바로가기](https://www.youtube.com/watch?v=bL4QaUiaqw4&feature=youtu.be) |
 | 서버 GitHub | [바로가기](https://github.com/JeongTaeWoong99/Adventurer_Raising_Server) |
 
-## ⚙️ 기술 스택
+## 🛠 기술 스택
 
 ### 클라이언트
 - **Unity 6000.0.44f1** - 3D 게임 엔진
