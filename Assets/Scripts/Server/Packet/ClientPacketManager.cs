@@ -33,7 +33,6 @@ public class PacketManager
 	// 'C_'는 클라에서 서보 보내는 패킷 형식이니, ServerPacketManager에 클라 패킷을 처리하는 펑션+핸들을 등록을 해줘야 하는 것.
 	public void Register()
 	{
-		
 		_makeFunc.Add((ushort)PacketID.S_MakeIdResult, MakePacket<S_MakeIdResult>);
 		 _handler.Add((ushort)PacketID.S_MakeIdResult, PacketHandler.S_MakeIdResultHandler);
 

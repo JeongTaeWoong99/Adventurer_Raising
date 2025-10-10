@@ -18,7 +18,7 @@ public class InfoState : MonoBehaviour
     
     [Header("서버에서 받은 serialNumber를 통해, 제이슨 정보로 디스플레이 세팅")]
     [SerializeField] protected int     maxHp;               
-    [SerializeField] protected Vector3 normalAttackRange;   
+    // [SerializeField] protected Vector3 normalAttackRange;   
     [SerializeField] protected int     normalAttackDamage;  
     [SerializeField] protected float   moveSpeed;           
     
@@ -76,11 +76,11 @@ public class InfoState : MonoBehaviour
         }
     }
     
-    public Vector3 NormalAttackRange
-    {
-        get => normalAttackRange;
-        set => normalAttackRange = value;
-    }
+    // public Vector3 NormalAttackRange
+    // {
+    //     get => normalAttackRange;
+    //     set => normalAttackRange = value;
+    // }
     
     public int NormalAttackDamage
     {
@@ -133,6 +133,25 @@ public class InfoState : MonoBehaviour
         // 히트
         else
         {
+            // HIT 애니메이션 파라미터나 상태가 없으면 리턴
+            if (controller.animator.runtimeAnimatorController == null)
+                return;
+            
+            // Animator의 파라미터를 통해 HIT 상태 존재 여부 확인
+            bool hasHitParameter = false;
+            foreach (AnimatorControllerParameter parameter in controller.animator.parameters)
+            {
+                if (parameter.name == "HIT" || parameter.name == "Hit")
+                {
+                    hasHitParameter = true;
+                    break;
+                }
+            }
+            
+            // 파라미터가 없거나 HasState로 직접 확인
+            if (!hasHitParameter && !controller.animator.HasState(0, Animator.StringToHash("HIT")))
+                return;
+         
             // 오브젝트 히트 동작
             controller.dir     = moveDir;           // 서버에서 방향을 계산
             controller.Anime   = Define.Anime.Hit;

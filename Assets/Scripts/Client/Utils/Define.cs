@@ -7,7 +7,7 @@
 
 	public enum Anime
 	{
-		Idle, Run, Dash, Attack, Skill, Pose, Hit, Death,
+		Idle, Run, Dash, Attack, Skill, Hit, Death,
 	}
 
     public enum Layer

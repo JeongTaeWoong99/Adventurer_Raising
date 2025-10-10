@@ -18,10 +18,10 @@ public class NetworkManager : MonoBehaviour
     public bool isNetworkInit_Complete = false; // 네트워크가 연결되면, Connector->ServerSession에서 ture로 변경
     
     [Header("PP = Packet Processing")]
-    ManagementPP    _managementPP   = new ManagementPP();
-    OperationPP     _operationPP    = new OperationPP();
-    DataBasePP      _dataBasePP     = new DataBasePP();
-    NetworkStatsPP  _networkStatsPP = new NetworkStatsPP();
+    ManagementPP   _managementPP   = new ManagementPP();
+    OperationPP    _operationPP    = new OperationPP();
+    DataBasePP     _dataBasePP     = new DataBasePP();
+    NetworkStatsPP _networkStatsPP = new NetworkStatsPP();
     
     public static ManagementPP   Management  { get { return Instance._managementPP; } }
     public static OperationPP    Operation   { get { return Instance._operationPP; } }
@@ -62,26 +62,15 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-        // DNS (Domain Name System) - 기존 로직 그대로 유지 (서버 연결용)
-        string      host     = Dns.GetHostName();
-        IPHostEntry ipHost   = Dns.GetHostEntry(host);
-        IPAddress   ipAddr   = ipHost.AddressList[0]; // 기존처럼 첫 번째 주소 사용
-        IPEndPoint  endPoint = new IPEndPoint(ipAddr, 7777);
+        // 서버 IP 주소로 직접 연결 (다른 컴퓨터에서 접속하기 위해)
+        IPAddress  ipAddr   = IPAddress.Parse("211.237.180.244"); // 서버 컴퓨터의 실제 IP 주소
+        IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
         
         Connector connector = new Connector();
         connector.Connect(endPoint, () => { return _session; }, 1);
-
-        // 핑 측정용으로는 IPv4 주소 따로 찾기
-        string pingIP = "127.0.0.1"; // 기본값
-        foreach (IPAddress address in ipHost.AddressList)
-        {
-            if (address.AddressFamily == AddressFamily.InterNetwork)
-            {
-                pingIP = address.ToString();
-                break;
-            }
-        }
-        // 핑 측정용 IP 설정 (서버 연결 IP와 별개)
+        
+        // 핑 측정용 IP도 서버 IP와 동일하게 설정
+        string pingIP = "211.237.180.244";
         _networkStatsPP.SetServerIP(pingIP);
     }
 
