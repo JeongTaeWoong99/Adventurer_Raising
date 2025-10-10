@@ -23,7 +23,7 @@ public class MonsterController : BaseController
 			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);	// 로테이션 회전
 		
 		if (!characterController)
-			return;
+			return;	
 		characterController.Move(dir.normalized * (infoState.MoveSpeed * Time.deltaTime));
 	}
 	

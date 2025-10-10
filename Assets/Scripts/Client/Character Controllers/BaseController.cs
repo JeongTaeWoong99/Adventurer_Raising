@@ -54,7 +54,7 @@ public abstract class BaseController : MonoBehaviour
 				case Define.Anime.Run:  // 이어서 재생
 					animator.CrossFade("RUN", 0.1f, -1);
 					break;
-				case Define.Anime.Dash:   // 초기화 재생
+				case Define.Anime.Dash: // 초기화 재생
 					isAnimeMove = true;
 					animator.CrossFade("DASH", 0.1f, -1, 0f);
 					break;
@@ -64,7 +64,7 @@ public abstract class BaseController : MonoBehaviour
 					SoundCheckAndPlay();
 					break;
 				case Define.Anime.Skill: // 초기화 재생
-					animator.CrossFade("SKILL" + currentSkillKey,		  0.1f, -1, 0f);
+					animator.CrossFade("SKILL" + currentSkillKey,        0.1f, -1, 0f);
 					break;
 				case Define.Anime.Hit: // 초기화 재생
 					animator.CrossFade("HIT", 0.1f, -1, 0f);
@@ -188,13 +188,13 @@ public abstract class BaseController : MonoBehaviour
 		if (playerInfoState == null && objectAndMonsterInfoState == null) return;
 		
 		// 공격 범위를 시각화(공통)
-		Vector3 attackCenter = transform.position + transform.forward * 0.5f + Vector3.up * 1f;
-		Gizmos.color = new Color(1, 0, 0, 1f);
-		if(WorldObjectType is Define.WorldObject.MyPlayer or Define.WorldObject.CommonPlayer) 
-			Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, new Vector3(playerInfoState.NormalAttackRange.x * 2, playerInfoState.NormalAttackRange.y * 2, playerInfoState.NormalAttackRange.z * 2));
-		else 
-			Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, new Vector3(objectAndMonsterInfoState.NormalAttackRange.x * 2, objectAndMonsterInfoState.NormalAttackRange.y * 2, objectAndMonsterInfoState.NormalAttackRange.z * 2));
-		Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+		// Vector3 attackCenter = transform.position + transform.forward * 0.5f + Vector3.up * 1f;
+		// Gizmos.color = new Color(1, 0, 0, 1f);
+		// if(WorldObjectType is Define.WorldObject.MyPlayer or Define.WorldObject.CommonPlayer) 
+		// 	Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, new Vector3(playerInfoState.NormalAttackRange.x * 2, playerInfoState.NormalAttackRange.y * 2, playerInfoState.NormalAttackRange.z * 2));
+		// else 
+		// 	Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, new Vector3(objectAndMonsterInfoState.NormalAttackRange.x * 2, objectAndMonsterInfoState.NormalAttackRange.y * 2, objectAndMonsterInfoState.NormalAttackRange.z * 2));
+		// Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
 		
 		// 몬스터 찾기 범위를 시각화(몬스터)
 		if (WorldObjectType is Define.WorldObject.Monster)

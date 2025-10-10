@@ -42,8 +42,6 @@ public class SkillMove : MonoBehaviour
 			return;
 
 		transform.position += _direction * (_speed * Time.deltaTime);
-		
-		Debug.Log("디렉션 더하기 = " + _direction);
 	}
 }
 

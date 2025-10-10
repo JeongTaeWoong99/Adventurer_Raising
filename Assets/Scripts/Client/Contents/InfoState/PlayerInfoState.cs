@@ -69,13 +69,13 @@ public class PlayerInfoState : InfoState
 		var dict = ClientManager.Data.CharacterInfoDict;
 		string key = $"{serialNumber}_{level}";
 		CharacterInfoData info = dict[key];
-
+		
 		// 공통 고정 설정값 업데이트
 		this.level         = level;
 		maxHp              = int.Parse(info.maxHp);
 		normalAttackDamage = int.Parse(info.normalAttackDamage);
 		moveSpeed          = float.Parse(info.moveSpeed);
-		normalAttackRange  = Extension.ParseVector3(info.normalAttackRange);
+		//normalAttackRange  = Extension.ParseVector3(info.normalAttackRange);
 		// 플레이어 전용
 		needExp            = int.Parse(info.needExp);
 

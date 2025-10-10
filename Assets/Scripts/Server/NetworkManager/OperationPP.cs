@@ -281,8 +281,7 @@ public class OperationPP
 							InfoState targetInfoState = targetObject.GetComponent<InfoState>();
 							if (targetInfoState != null) 
 							{
-								targetInfoState.OnAttacked(attackerPlayer.gameObject,
-									new Vector3(targetEntity.hitMoveDirX, targetEntity.hitMoveDirY, targetEntity.hitMoveDirZ) , damage, effectSerial);
+								targetInfoState.OnAttacked(attackerPlayer.gameObject, new Vector3(targetEntity.hitMoveDirX, targetEntity.hitMoveDirY, targetEntity.hitMoveDirZ) , damage, effectSerial);
 							}
 							else
 							{
@@ -395,7 +394,7 @@ public class OperationPP
 		float   duration     = p.duration;
 		Vector3 skillCreatePos = Extension.ParseVector3(p.attackEffectCreatePos);
 		
-		// Debug.Log("스킬 그래픽 생성 / " + p.attackEffectSerial + " / " + p.duration);
+		Debug.Log("스킬 그래픽 생성 / " + skillCreatePos);
 		
 		if (entityType == (int)Define.Layer.Player)
 		{

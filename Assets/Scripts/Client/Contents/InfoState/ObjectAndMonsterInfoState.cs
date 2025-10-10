@@ -30,7 +30,7 @@ public class ObjectAndMonsterInfoState : InfoState
 		maxHp              = int.Parse(info.maxHp);
 		normalAttackDamage = int.Parse(info.normalAttackDamage);
 		moveSpeed          = float.Parse(info.moveSpeed);
-		normalAttackRange  = Extension.ParseVector3(info.normalAttackRange);
+		//normalAttackRange  = Extension.ParseVector3(info.normalAttackRange);
 		// 오 + 몬 전용
 		findRadius         = int.Parse(info.findRadius);
 		dropExp            = int.Parse(info.dropExp);

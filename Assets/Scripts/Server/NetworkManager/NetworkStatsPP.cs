@@ -8,7 +8,7 @@ using UnityEngine;
 public class NetworkStatsPP
 {
     // 네트워크 통계 추적 변수들
-    private float  ping                      = 0f;
+    private float  ping                      = 999f; // 초기값: 측정 전 상태
     private float  lastPingTime              = 0f;
     private string serverIP                  = "";
     private System.Net.NetworkInformation.Ping pingSender;
@@ -82,7 +82,7 @@ public class NetworkStatsPP
         }
         
         // 통계 초기화
-        ping                      = 0f;
+        ping                      = 999f; // 측정 전 상태로 초기화
         totalBytesReceived        = 0;
         totalBytesSent            = 0;
         packetsReceived           = 0;
@@ -164,16 +164,23 @@ public class NetworkStatsPP
     // 메인 업데이트 (NetworkManager.Update에서 호출)
     public void UpdateStats()
     {
-        if (!NetworkManager.Instance.isNetworkInit_Complete) return;
-        
+        // 핑 측정은 네트워크 연결 상태와 무관하게 항상 실행
         // 비동기 핑 측정 시작 (블로킹 방지)
-        if (Time.time - lastPingTime > 1.0f && pingSender != null && !isPingInProgress)
+        if (Time.time - lastPingTime > 1.0f && pingSender != null && !isPingInProgress && !string.IsNullOrEmpty(serverIP))
         {
             if (monoBehaviourRef != null)
             {
                 monoBehaviourRef.StartCoroutine(MeasurePingAsync());
             }
             lastPingTime = Time.time;
+        }
+        
+        // 네트워크 통계는 연결 완료 후에만 업데이트
+        if (!NetworkManager.Instance.isNetworkInit_Complete) 
+        {
+            // 연결 전에도 UI는 업데이트 (핑 정보 표시)
+            UpdateNetworkStatsUI();
+            return;
         }
         
         // 연결 상태 모니터링 비활성화 (기존 기능 복구)
@@ -211,55 +218,67 @@ public class NetworkStatsPP
         }
     }
     
-    // 비동기 핑 측정 코루틴 (Update 블로킹 방지)
+    // TCP 기반 핑 측정 코루틴 (실제 게임 통신 경로 사용)
     private IEnumerator MeasurePingAsync()
     {
         isPingInProgress = true;
-        
-        // 별도 스레드에서 핑 측정
-        PingReply reply    = null;
-        bool      pingCompleted = false;
-        
-        // 백그라운드에서 핑 실행
-        System.Threading.Tasks.Task.Run(() =>
+
+        // TCP 연결 시간 측정 (실제 게임 통신 경로)
+        float startTime = Time.realtimeSinceStartup;
+        bool connectionSuccess = false;
+
+        // 비동기 연결 시도 (실제 게임 포트 사용)
+        System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();
+        var connectTask = client.ConnectAsync(serverIP, 7777);
+
+        // 연결 완료 대기 (타임아웃: 1초)
+        float timeout = 1.0f;
+        float startWaitTime = Time.realtimeSinceStartup;
+        while (!connectTask.IsCompleted && (Time.realtimeSinceStartup - startWaitTime) < timeout)
         {
-            try
-            {
-                reply         = pingSender.Send(serverIP, 1000); // 1초 타임아웃
-                pingCompleted = true;
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning($"Ping measurement failed: {e.Message}");
-                pingCompleted = true;
-            }
-        });
-        
-        // 핑 완료 대기 (최대 1.5초)
-        float timeout = 1.5f;
-        while (!pingCompleted && timeout > 0)
-        {
-            timeout -= Time.deltaTime;
-            yield return null; // 다음 프레임까지 대기
+            yield return null;
         }
-        
-        // 결과 처리
-        if (pingCompleted && reply != null && reply.Status == IPStatus.Success)
+
+        try
         {
-            ping = reply.RoundtripTime;
+            if (connectTask.IsCompleted && !connectTask.IsFaulted)
+            {
+                // 연결 성공 - 왕복 시간 측정
+                float endTime = Time.realtimeSinceStartup;
+                ping = (endTime - startTime) * 1000f; // ms로 변환
+                connectionSuccess = true;
+
+                // 연결 즉시 종료 (실제 핑 측정용)
+                client.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"TCP ping measurement failed: {e.Message}");
+        }
+        finally
+        {
+            client.Dispose();
+        }
+
+        // 연결 실패 처리
+        if (!connectionSuccess)
+        {
+            ping = 999f;
+            Debug.LogWarning($"TCP ping measurement failed: Connection timeout or error to {serverIP}:7777");
         }
         else
         {
-            ping = 999f; // 실패시 높은 값
+            Debug.Log($"Ping measurement successful: {ping:F0}ms to {serverIP}:7777");
         }
-        
+
         isPingInProgress = false;
     }
     
     // 네트워크 통계 UI 업데이트
     private void UpdateNetworkStatsUI()
     {
-        if (!NetworkManager.Instance.isNetworkInit_Complete) return;
+        // UI는 연결 상태와 무관하게 항상 업데이트 (핑 정보 표시 위해)
         
         try
         {
@@ -354,6 +373,7 @@ public class NetworkStatsPP
     // 디버그용 정보 출력
     public string GetDebugInfo()
     {
-        return $"Ping: {ping:F0}ms | Down: {downloadSpeed:F1}KB/s {downloadPacketsPerSecond}pkt/s {downloadPacketLoss:F1}% | Up: {uploadSpeed:F1}KB/s {uploadPacketsPerSecond}pkt/s {uploadPacketLoss:F1}% | Healthy: {isConnectionHealthy}";
+        string pingStatus = (ping == 999f) ? "Failed" : (ping == 0f) ? "Not Measured" : $"{ping:F0}ms";
+        return $"Ping: {pingStatus} | ServerIP: {serverIP} | Down: {downloadSpeed:F1}KB/s {downloadPacketsPerSecond}pkt/s {downloadPacketLoss:F1}% | Up: {uploadSpeed:F1}KB/s {uploadPacketsPerSecond}pkt/s {uploadPacketLoss:F1}% | Healthy: {isConnectionHealthy}";
     }
 } 
