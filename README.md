@@ -1,13 +1,13 @@
 ## 📑 목차
-- [개요](#-개요)
-- [주요 기능](#-주요-기능)
-- [인게임 사진](#-인게임-사진)
-- [시스템 구조도](#-시스템-구조도)
-- [프로젝트 구조](#-프로젝트-구조)
-- [관련 링크](#-관련-링크)
-- [기술 스택](#-기술-스택)
-- [아키텍처](#-아키텍처)
-- [성능 특성](#-성능-특성)
+- [📋 개요](#-개요)
+- [🎬 인게임 사진](#-인게임-사진)
+- [🔗 관련 링크](#-관련-링크)
+- [🔧 시스템 구조도](#-시스템-구조도)
+- [✨ 주요 기능](#-주요-기능)
+- [📂 프로젝트 구조](#-프로젝트-구조)
+- [🛠 기술 스택](#-기술-스택)
+- [🏗 아키텍처](#-아키텍처)
+- [🚀 성능 특성](#-성능-특성)
 
 ## 📋 개요
 
@@ -24,6 +24,48 @@
 데디케이트 서버를 구축하여, 멀티플레이가 가능합니다.
 
 3D 게임 개발 및 네트워크 시스템에 대한 전반적인 이해를 목적으로, 클라이언트부터 서버와 DB까지 직접 설계하고 구현했습니다.
+
+## 🎬 인게임 사진
+
+<table>
+  <tr>
+    <td align="center">
+      <img width="640" height="360" alt="로그인 화면" src="https://github.com/user-attachments/assets/eae1f5d1-66f9-45ab-9c95-a243a4f3d9ee" />
+      <br/>
+      <b>메인 화면</b>
+    </td>
+    <td align="center">
+      <img width="640" height="360" alt="인게임 전투 화면" src="https://github.com/user-attachments/assets/f667d625-3be4-4b9f-8a9b-3d58ff999d94" />
+      <br/>
+      <b>튜토리얼 화면</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img width="640" height="360" alt="C# 데디케이트 서버" src="https://github.com/user-attachments/assets/77bc055d-b986-42cb-89b3-5b50de9f131a" />
+      <br/>
+      <b>전투 화면</b>
+    </td>
+    <td align="center">
+      <img width="640" height="360" alt="FIREBASE DB" src="https://github.com/user-attachments/assets/b238cf89-7f3f-4615-bd19-860c3556ad9e" />
+      <br/>
+      <b>점수 화면</b>
+    </td>
+  </tr>
+</table>
+
+## 🔗 관련 링크
+
+| 항목 | 링크                                                                   |
+|------|----------------------------------------------------------------------|
+| 시연 영상 | [바로가기](https://www.youtube.com/watch?v=bL4QaUiaqw4&feature=youtu.be) |
+| 서버 GitHub | [바로가기](https://github.com/JeongTaeWoong99/Adventurer_Raising_Server) |
+
+## 🔧 시스템 구조도
+
+<p align="center">
+  <img width="1056" height="501" alt="image" src="https://github.com/user-attachments/assets/717bd5d7-3ba2-43a3-a8f7-1881c426f9b8" />
+</p>
 
 ## ✨ 주요 기능
 
@@ -51,19 +93,8 @@
 - **Firebase Firestore** : 플레이어 데이터 영구 저장
 - **클라이언트 캐싱** : JSON 기반 게임 데이터 관리
 
-## 🎬 인게임 사진
 
-<p align="center">
-  <img width="700" height="579" alt="스크린샷 2025-09-14 204755" src="https://github.com/user-attachments/assets/49372a5e-1b98-4a70-a28d-34bbe83c4a65" />
-</p>
-
-## 🏗️ 시스템 구조도
-
-<p align="center">
-  <img width="1056" height="501" alt="image" src="https://github.com/user-attachments/assets/717bd5d7-3ba2-43a3-a8f7-1881c426f9b8" />
-</p>
-
-## 📁 프로젝트 구조
+## 📂 프로젝트 구조
 
 ```
 Assets/Scripts/
@@ -156,13 +187,6 @@ Assets/Scripts/
     ├── FirestoreManager.cs         # Firestore 읽기/쓰기
     └── RealTimeManager.cs          # 실시간 DB
 ```
-
-## 🔗 관련 링크
-
-| 항목 | 링크                                                                   |
-|------|----------------------------------------------------------------------|
-| 시연 영상 | [바로가기](https://www.youtube.com/watch?v=bL4QaUiaqw4&feature=youtu.be) |
-| 서버 GitHub | [바로가기](https://github.com/JeongTaeWoong99/Adventurer_Raising_Server) |
 
 ## 🛠 기술 스택
 
