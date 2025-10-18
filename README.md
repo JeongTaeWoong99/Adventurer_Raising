@@ -53,9 +53,32 @@
 
 ## 🎬 인게임 사진
 
-<p align="center">
-  <img width="700" height="579" alt="스크린샷 2025-09-14 204755" src="https://github.com/user-attachments/assets/49372a5e-1b98-4a70-a28d-34bbe83c4a65" />
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <img width="640" height="360" alt="로그인 화면" src="https://github.com/user-attachments/assets/eae1f5d1-66f9-45ab-9c95-a243a4f3d9ee" />
+      <br/>
+      <b>메인 화면</b>
+    </td>
+    <td align="center">
+      <img width="640" height="360" alt="인게임 전투 화면" src="https://github.com/user-attachments/assets/f667d625-3be4-4b9f-8a9b-3d58ff999d94" />
+      <br/>
+      <b>튜토리얼 화면</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img width="640" height="360" alt="C# 데디케이트 서버" src="https://github.com/user-attachments/assets/77bc055d-b986-42cb-89b3-5b50de9f131a" />
+      <br/>
+      <b>전투 화면</b>
+    </td>
+    <td align="center">
+      <img width="640" height="360" alt="FIREBASE DB" src="https://github.com/user-attachments/assets/b238cf89-7f3f-4615-bd19-860c3556ad9e" />
+      <br/>
+      <b>점수 화면</b>
+    </td>
+  </tr>
+</table>
 
 ## 🔧 시스템 구조도
 
