@@ -2,8 +2,8 @@
 - [📋 개요](#-개요)
 - [🎬 인게임 사진](#-인게임-사진)
 - [🔗 관련 링크](#-관련-링크)
-- [✨ 주요 기능](#-주요-기능)
 - [🔧 시스템 구조도](#-시스템-구조도)
+- [✨ 주요 기능](#-주요-기능)
 - [📂 프로젝트 구조](#-프로젝트-구조)
 - [🛠 기술 스택](#-기술-스택)
 - [🏗 아키텍처](#-아키텍처)
@@ -61,6 +61,12 @@
 | 시연 영상 | [바로가기](https://www.youtube.com/watch?v=bL4QaUiaqw4&feature=youtu.be) |
 | 서버 GitHub | [바로가기](https://github.com/JeongTaeWoong99/Adventurer_Raising_Server) |
 
+## 🔧 시스템 구조도
+
+<p align="center">
+  <img width="1056" height="501" alt="image" src="https://github.com/user-attachments/assets/717bd5d7-3ba2-43a3-a8f7-1881c426f9b8" />
+</p>
+
 ## ✨ 주요 기능
 
 ### 실시간 멀티플레이어
@@ -87,12 +93,6 @@
 - **Firebase Firestore** : 플레이어 데이터 영구 저장
 - **클라이언트 캐싱** : JSON 기반 게임 데이터 관리
 
-
-## 🔧 시스템 구조도
-
-<p align="center">
-  <img width="1056" height="501" alt="image" src="https://github.com/user-attachments/assets/717bd5d7-3ba2-43a3-a8f7-1881c426f9b8" />
-</p>
 
 ## 📂 프로젝트 구조
 
