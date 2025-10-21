@@ -37,19 +37,19 @@
     <td align="center">
       <img width="640" height="360" alt="인게임 전투 화면" src="https://github.com/user-attachments/assets/f667d625-3be4-4b9f-8a9b-3d58ff999d94" />
       <br/>
-      <b>튜토리얼 화면</b>
+      <b>전투 화면</b>
     </td>
   </tr>
   <tr>
     <td align="center">
       <img width="640" height="360" alt="C# 데디케이트 서버" src="https://github.com/user-attachments/assets/77bc055d-b986-42cb-89b3-5b50de9f131a" />
       <br/>
-      <b>전투 화면</b>
+      <b>C# 데디케이트 서버</b>
     </td>
     <td align="center">
       <img width="640" height="360" alt="FIREBASE DB" src="https://github.com/user-attachments/assets/b238cf89-7f3f-4615-bd19-860c3556ad9e" />
       <br/>
-      <b>점수 화면</b>
+      <b>FIREBASE DB</b>
     </td>
   </tr>
 </table>
