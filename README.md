@@ -42,18 +42,6 @@
       <b>클라이언트 인게임 전투 화면</b>
     </td>
   </tr>
-  <tr>
-    <td align="center">
-      <img width="640" height="360" alt="C# 데디케이트 서버" src="https://github.com/user-attachments/assets/77bc055d-b986-42cb-89b3-5b50de9f131a" />
-      <br/>
-      <b>C# 데디케이트 서버</b>
-    </td>
-    <td align="center">
-      <img width="640" height="360" alt="FIREBASE DB" src="https://github.com/user-attachments/assets/b238cf89-7f3f-4615-bd19-860c3556ad9e" />
-      <br/>
-      <b>FIREBASE DB</b>
-    </td>
-  </tr>
 </table>
 
 ## 🔗 관련 링크
@@ -324,6 +312,8 @@ public class NetworkManager : MonoBehaviour
 - NetworkManager : 네트워크 I/O 및 패킷 처리
 - 장점: 모듈화, 테스트 용이, 명확한 책임 분리
 
+---
+
 #### Dispatcher 패턴 (스레드 안전성)
 
 Unity API는 메인 스레드에서만 호출 가능하므로, 네트워크 스레드에서 받은 패킷을 메인 스레드로 마샬링합니다.
@@ -371,6 +361,8 @@ public static void S_BroadcastEntityMoveHandler(PacketSession session, IPacket p
     });
 }
 ```
+
+---
 
 #### 캐릭터 컨트롤러 계층 구조
 
@@ -511,6 +503,8 @@ public class CommonPlayerController : BaseController
 }
 ```
 
+---
+
 #### UI 시스템 계층 구조
 
 ```
@@ -586,6 +580,8 @@ public class UI_GameScene : UI_Scene
     }
 }
 ```
+
+---
 
 #### 오브젝트 풀링
 
