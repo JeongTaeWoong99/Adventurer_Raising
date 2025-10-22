@@ -1,3 +1,5 @@
+# 모험가 키우기 - 클라이언트 리포지토리
+
 ## 📑 목차
 - [📋 개요](#-개요)
 - [🎬 인게임 사진](#-인게임-사진)
@@ -32,12 +34,12 @@
     <td align="center">
       <img width="640" height="360" alt="로그인 화면" src="https://github.com/user-attachments/assets/eae1f5d1-66f9-45ab-9c95-a243a4f3d9ee" />
       <br/>
-      <b>메인 화면</b>
+      <b>클라이언트 로그인 화면</b>
     </td>
     <td align="center">
       <img width="640" height="360" alt="인게임 전투 화면" src="https://github.com/user-attachments/assets/f667d625-3be4-4b9f-8a9b-3d58ff999d94" />
       <br/>
-      <b>전투 화면</b>
+      <b>클라이언트 인게임 전투 화면</b>
     </td>
   </tr>
   <tr>
