@@ -30,12 +30,12 @@
 <table>
   <tr>
     <td align="center">
-      <img width="640" height="360" alt="로그인 화면" src="https://github.com/user-attachments/assets/eae1f5d1-66f9-45ab-9c95-a243a4f3d9ee" />
+      <img width="640" height="360" alt="로그인 화면" src="Images/로그인화면.png" />
       <br/>
       <b>클라이언트 로그인 화면</b>
     </td>
     <td align="center">
-      <img width="640" height="360" alt="인게임 전투 화면" src="https://github.com/user-attachments/assets/f667d625-3be4-4b9f-8a9b-3d58ff999d94" />
+      <img width="640" height="360" alt="인게임 전투 화면" src="Images/인게임전투화면.png" />
       <br/>
       <b>클라이언트 인게임 전투 화면</b>
     </td>
@@ -52,7 +52,7 @@
 ## 🔧 시스템 구조도
 
 <p align="center">
-  <img width="1056" height="501" alt="image" src="https://github.com/user-attachments/assets/717bd5d7-3ba2-43a3-a8f7-1881c426f9b8" />
+  <img width="1056" height="501" alt="image" src="Images/시스템구조도.png" />
 </p>
 
 ## ✨ 주요 기능
