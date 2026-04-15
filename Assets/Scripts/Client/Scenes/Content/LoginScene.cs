@@ -16,12 +16,17 @@ public class LoginScene : BaseScene
         StartCoroutine(WaitForAsync());
     }
     
-    // 생성 순서
-    // DB -> Client -> Server
+    // ── 매니저 생성 순서 및 '@' 오브젝트 규칙 ─────────────────────────────────────
+    // 생성 순서: DB → Client → Network
+    //
+    // '@' 접두사(예: @DBManager, @ClientManager, @NetworkManager)는
+    // 인스펙터에 미리 배치된 오브젝트가 아니라, 각 매니저의 Init()이 처음 호출될 때
+    // 코드로 직접 생성되는 오브젝트를 의미합니다.
+    // → 씬 어디에도 해당 컴포넌트가 붙어있지 않아야 정상 동작합니다.
+    // ───────────────────────────────────────────────────────────────────────────
     private IEnumerator WaitForAsync()
     {
-        // 네트워크 매니저가 존재하면, 삭제해주기.
-        // -> 게임씬에서 넘어오는 경우, 연결이 끊기고 나서, @NetworkManager가 남아있는 상태이다...
+        // 게임씬에서 넘어오는 경우, 이전 연결이 끊긴 @NetworkManager가 남아 있으므로 제거.
         NetworkManager existingNetworkManager = NetworkManager.GetExistingInstance();
         if (existingNetworkManager != null) Destroy(existingNetworkManager.gameObject);
         

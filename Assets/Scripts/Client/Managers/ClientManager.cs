@@ -45,6 +45,8 @@ public class ClientManager : MonoBehaviour
         if (s_instance != null) 
             return;
         
+        // '@ClientManager'는 인스펙터 배치 오브젝트가 아닌, 이 Init()에서 코드로 생성되는 오브젝트입니다.
+        // LoginScene.cs의 WaitForAsync()에서 ClientManager.Instance 접근 시 최초 생성됩니다.
         GameObject go = GameObject.Find("@ClientManager");
         if (go == null)
         {
