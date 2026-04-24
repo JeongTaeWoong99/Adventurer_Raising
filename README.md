@@ -364,17 +364,28 @@ public static void S_BroadcastEntityMoveHandler(PacketSession session, IPacket p
 
 ---
 
-#### 캐릭터 컨트롤러 계층 구조
+#### 상속 구조와 State Pattern을 활용한 캐릭터 시스템
+
+**📌 해결하고자 한 문제**
+캐릭터 공통 기능의 중복 구현 및 복잡한 if-else 상태 제어로 인한 가독성 및 유지보수성 저하 문제를 해결하고자 했습니다.
+
+**🔧 구현 방법**
+- **계층적 상속 구조 설계** : `BaseController`에 공통 로직을 집중하고, 플레이어·몬스터·오브젝트 등은 고유 기능만 확장하도록 책임을 분리했습니다.
+- **Enum 기반 상태 머신 (State Pattern)** : 캐릭터 상태를 `Define.Anime` Enum으로 정의하고, 상태 변경 시 `switch-case` 기반으로 자동 호출되는 상태 메서드(`UpdateIdle`, `UpdateRun`, `UpdateAttack` 등)로 분리하여 상태 전환 가시성과 확장성을 확보했습니다.
+
+**✨ 핵심 성과**
+- **코드 중복 제거** : 공통 로직의 중앙 집중화를 통해 중복 코드를 제거하고 전반적인 코드 관리 효율을 극대화했습니다.
+- **유연한 확장 체계** : 새로운 상태나 캐릭터 추가 시 기존 로직 수정 없이 독립적 확장이 가능한 구조적 기틀을 마련했습니다.
 
 ```
 BaseController (Abstract)
-├── CommonPlayerController (다른 플레이어)
+├── CommonPlayerController (다른 플레이어 공통)
 │   └── MyPlayerController (내 플레이어)
 ├── MonsterController (몬스터)
 └── ObjectController (상호작용 오브젝트)
 ```
 
-**BaseController.cs** - 모든 엔티티의 공통 로직
+**BaseController.cs** - 모든 엔티티의 공통 로직 + State Pattern
 ```csharp
 public abstract class BaseController : MonoBehaviour
 {
