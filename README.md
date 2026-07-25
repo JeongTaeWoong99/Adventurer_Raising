@@ -13,19 +13,22 @@
 
 ## 📋 개요
 
+몬스터를 사냥하며, 캐릭터를 성장시키는 3D 멀티 RPG 게임
+
 | 항목 | 내용 |
 |------|------|
-| 기간 | 2025.05 ~ 2025.08 |
+| 기간 | 25.05 ~ 25.08(4개월) |
 | 인원 | 1인 개발 |
 | 역할 | 클라이언트, 서버, DB |
-| 도구 | UNITY, C#, TCP SOCKET, FIREBASE |
+| 도구 | Unity, C#, TCP Socket, Firebase |
 | 타겟 기기 | PC |
+| 참여/입상 | X |
 
 판타지 배경의 쿼터뷰 3D 멀티 RPG 게임입니다. 
 
 C# 기반 게임 서버를 구축하여, 멀티플레이가 가능합니다.
 
-3D 게임 개발 및 네트워크 시스템에 대한 전반적인 이해를 목적으로, 클라이언트부터 서버와 DB까지 직접 설계하고 구현했습니다.
+3D 게임 개발 및 네트워크 시스템에 대한 전반적인 이해를 목적으로, 서버 프레임워크를 먼저 학습한 뒤, 클라이언트 개발에 맞춰 서버와 DB를 확장 구현하였습니다.
 
 ## 🎬 인게임 사진
 
@@ -80,8 +83,10 @@ C# 기반 게임 서버를 구축하여, 멀티플레이가 가능합니다.
 
 ### 인증 및 데이터 관리
 - **Firebase Authentication** : 계정 생성 및 로그인
-- **Firebase Firestore** : 플레이어 데이터 영구 저장
-- **클라이언트 캐싱** : JSON 기반 게임 데이터 관리
+- **Firebase Realtime Database** : 플레이어 데이터 영구 저장
+- **Firebase Firestore** : 게임 데이터 테이블(`characterInfos`, `attackInfos`) 보관
+- **데이터 자동 동기화** : 실행 시 최신 게임 데이터를 내려받아 JSON으로 저장
+- **클라이언트 캐싱** : `DataManager`가 JSON을 Dictionary로 변환하여 즉시 조회
 
 
 ## 📂 프로젝트 구조
@@ -193,8 +198,8 @@ Assets/Scripts/
 
 ### 데이터베이스
 - **Firebase Authentication** - 계정 인증
-- **Firebase Firestore** - NoSQL 플레이어 데이터 저장
-- **Firebase Realtime Database** - 실시간 데이터 동기화
+- **Firebase Realtime Database** - 플레이어 데이터 영구 저장
+- **Firebase Firestore** - 게임 데이터 테이블 보관 및 런타임 다운로드
 
 ### 디자인 패턴
 - **Singleton Pattern** - 매니저 클래스
@@ -364,18 +369,18 @@ public static void S_BroadcastEntityMoveHandler(PacketSession session, IPacket p
 
 ---
 
-#### 상속 구조와 State Pattern을 활용한 캐릭터 시스템
+#### 상속 구조와 상태 머신을 활용한 캐릭터 시스템
 
 **📌 해결하고자 한 문제**
 캐릭터 공통 기능의 중복 구현 및 복잡한 if-else 상태 제어로 인한 가독성 및 유지보수성 저하 문제를 해결하고자 했습니다.
 
 **🔧 구현 방법**
 - **계층적 상속 구조 설계** : `BaseController`에 공통 로직을 집중하고, 플레이어·몬스터·오브젝트 등은 고유 기능만 확장하도록 책임을 분리했습니다.
-- **Enum 기반 상태 머신 (State Pattern)** : 캐릭터 상태를 `Define.Anime` Enum으로 정의하고, 상태 변경 시 `switch-case` 기반으로 자동 호출되는 상태 메서드(`UpdateIdle`, `UpdateRun`, `UpdateAttack` 등)로 분리하여 상태 전환 가시성과 확장성을 확보했습니다.
+- **Enum 기반 상태 머신 (State Machine)** : 캐릭터 상태를 `Define.Anime` Enum으로 정의하고, 상태 변경 시 `switch-case` 기반으로 자동 호출되는 상태 메서드(`UpdateIdle`, `UpdateRun`, `UpdateAttack` 등)로 분리하여 상태 전환 가시성과 확장성을 확보했습니다.
 
 **✨ 핵심 성과**
-- **코드 중복 제거** : 공통 로직의 중앙 집중화를 통해 중복 코드를 제거하고 전반적인 코드 관리 효율을 극대화했습니다.
-- **유연한 확장 체계** : 새로운 상태나 캐릭터 추가 시 기존 로직 수정 없이 독립적 확장이 가능한 구조적 기틀을 마련했습니다.
+- **코드 중복 제거** : 공통 로직을 `BaseController`에 집중하여, 플레이어·몬스터·오브젝트가 동일 로직을 중복 구현하지 않도록 정리했습니다.
+- **상태 흐름 가시화** : 중첩되던 if-else를 상태별 메서드로 분리해, 각 상태의 동작과 전환 지점을 코드에서 바로 확인할 수 있습니다.
 
 ```
 BaseController (Abstract)
@@ -385,7 +390,7 @@ BaseController (Abstract)
 └── ObjectController (상호작용 오브젝트)
 ```
 
-**BaseController.cs** - 모든 엔티티의 공통 로직 + State Pattern
+**BaseController.cs** - 모든 엔티티의 공통 로직 + 상태 머신
 ```csharp
 public abstract class BaseController : MonoBehaviour
 {
